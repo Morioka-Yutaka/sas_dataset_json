@@ -102,11 +102,12 @@ quit;
                  pretty = Y
 );
 
- Required SAS 9.4 and above
+Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-22]
-  Version        : 0.10
+  Last update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
+  Version        : 0.1.1
   License        : MIT License
 
 *//*** HELP END ***/
@@ -129,6 +130,7 @@ sourceSystem_version=
 %if %length(&outpath) eq 0 %then %do;
  %let outpath = %sysfunc(pathname(WORK));
 %end;
+%let library=%upcase(&library);
 %let dataset=%upcase(&dataset);
 %let L_dataset=%lowcase(&dataset);
 
@@ -136,6 +138,7 @@ sourceSystem_version=
 data _null_;
  set sashelp.vxattr;
  where missing(name);
+ where same libname = "&library";
  where same memname = "&dataset";
  call symputx(xattr,xvalue,"L");
 run;
@@ -159,18 +162,17 @@ run;
   %let	sourceSystem_version =%sysfunc(scan( &SYSVLONG,1,P));
 %end;
 
-/*Set sequential numbers (ITEMGROUPDATASEQ) in the data set*/
 data &dataset._1;
-attrib ITEMGROUPDATASEQ label="Record identifier" length=8.;
+/*attrib ITEMGROUPDATASEQ label="Record identifier" length=8.;*/
  set &library..&dataset;
- ITEMGROUPDATASEQ=_N_;
+/* ITEMGROUPDATASEQ=_N_;*/
  run;
 
 /*Set dataset labels and last update dates*/
 data _null_;
 set sashelp.vtable;
-where libname = upcase("&library");
-where same memname = upcase("&dataset");
+ where same libname = "&library";
+ where same memname = "&dataset";
 call symputx("DS_LABEL",memlabel);
 call symputx("dbLastModifiedDateTime",modate);
 run;
@@ -196,6 +198,7 @@ run;
 data var_exattr;
  set sashelp.vxattr;
  where^ missing(name);
+ where same libname = "&library";
  where same memname = "&dataset";
 run;
 proc sort data=var_exattr;
@@ -218,7 +221,7 @@ length itemOID name label dataType targetDataType  displayFormat  format $200.
 length keySequence 8. ;
  if 0 then set columns_0;
 set sashelp.vcolumn(rename=(name=_name label=_label length=_length));
-where libname = upcase("&library");
+where libname = upcase("WORK");
 where same memname = upcase("&dataset._1");
   call missing(of displayFormat);
   if name = "ITEMGROUPDATASEQ" then itemOID=_name;
