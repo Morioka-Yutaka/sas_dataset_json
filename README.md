@@ -1,12 +1,12 @@
 # sas_dataset_json
-sas_dataset_json is a SAS macro package designed to support bi-directional conversion between CDISC-compliant Dataset-JSON format and SAS datasets.
+sas_dataset_json is a SAS macro package designed to support bi-directional conversion between CDISC-compliant Dataset-JSON format and SAS datasets.<br>
 
 # %m_sas_to_json1_1
   Description   : Exports a SAS dataset to Dataset-JSON 
                   format (version 1.1). This macro is designed to
-                  support clinical data interchange by generating
+                  support clinical data interchange by generating<br>
 
-  Purpose       : 
+  Purpose       : <br>
     - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.
