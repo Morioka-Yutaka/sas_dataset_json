@@ -104,4 +104,12 @@ quit;<br>
 
 # %m_json1_1_to_sas
 Comingsoon
-It's in development, so you'll have to wait just a moment..
+It's in development, so you'll have to wait just a moment.
+
+# version history
+0.1.0(22May2025): Initial version
+
+# What is SAS Packages?
+sashash is built on top of **SAS Packages framework(SPF)** created by Bartosz Jablonski.<br>
+For more on SAS Packages framework, see [SASPAC](https://github.com/yabwon/SAS_PACKAGES).<br>
+You can also find more SAS Packages(SASPAC) in [GitHub](https://github.com/SASPAC)<br>
