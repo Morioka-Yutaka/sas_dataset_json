@@ -1,7 +1,7 @@
 Type : Package
 Package : sas_dataset_json
 Title : sas_dataset_json--Provides various macros related to support bi-directional conversion between Dataset-JSON forma(version 1.1)t and SAS datasets.
-Version : 0.1.0
+Version : 0.1.1
 Author : Yutaka Morioka(sasyupi@gmail.com)
 Maintainer : Yutaka Morioka(sasyupi@gmail.com)
 License : MIT
