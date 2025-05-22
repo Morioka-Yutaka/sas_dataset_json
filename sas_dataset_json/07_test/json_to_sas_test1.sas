@@ -1,6 +1,6 @@
 /*** HELP START ***//*
 
-Sas dataset convert to Dataset-JSON(using SAS extended value)
+create dataset-json and  covert Dataset-JSON to Sas dataset.
 
 *//*** HELP END ***/
 
@@ -44,4 +44,14 @@ quit;
 );
 proc datasets lib=work memtype=data nolist;
   delete adsl_1 columns columns_0 columns_1 columns_2 Dummy_var_exattr_t Position Var_exattr Var_exattr_t ;
+quit;
+%m_json1_1_to_sas(inpath=%sysfunc(pathname(work))
+,ds=adsl)
+
+data mylib1.json_to_sas_test1;
+set adsl;
+run;
+
+proc datasets lib=work memtype=data nolist;
+  delete adsl alldata columns Dummy_columns Root Rows Sourcesystem ;
 quit;
