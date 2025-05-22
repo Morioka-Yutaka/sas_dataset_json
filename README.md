@@ -105,11 +105,46 @@ quit;<br>
 );
 
 # %m_json1_1_to_sas
-Comingsoon
-It's in development, so you'll have to wait just a moment.
+ Description   : <br>
+ 		Imports CDISC-compliant dataset-JSON v1.1 into a 
+                   SAS dataset, reconstructing structure and metadata including extended attributes.<br>
 
-# version history
-0.1.0(22May2025): Initial version
+  Key Features:<br>
+    - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine<br>
+    - Extracts "root", "columns", and "rows" objects from JSON<br>
+    - Dynamically generates:<br>
+        - LABEL, FORMAT, and RENAME statements<br>
+        - INPUT conversion logic for ISO8601 date/datetime types<br>
+    - Automatically applies:<br>
+        - Dataset-level metadata via PROC DATASETS and XATTR<br>
+        - Variable-level extended attributes such as:<br>
+            - dataType<br>
+            - targetDataType<br>
+            - displayFormat<br>
+            - keySequence<br>
+            - length<br>
+    - Provides warnings for unsupported data types (e.g., decimal)<br>
+
+  Parameters:<br>
+    inpath : Path to the folder containing the dataset-JSON file<br>
+    ds     : SAS dataset name to create (derived from the file name)<br>
+
+  Requirements:<br>
+    - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)<br>
+    - Input JSON must follow the dataset-JSON v1.1 specification<br>
+
+  Notes:
+    - "decimal" targetDataType is not natively supported in SAS;
+      values are read as numeric using the `best.` format with a warning
+    - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
+    - Extended metadata attributes are added using PROC DATASETS/XATTR
+
+  Example Usage:<br>
+    %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);<br>
+
+# version history<br>
+0.1.1(23May2025): Add %m_json1_1_to_sas
+0.1.0(22May2025): Initial version<br>
 
 # What is SAS Packages?
 sashash is built on top of **SAS Packages framework(SPF)** created by Bartosz Jablonski.<br>
