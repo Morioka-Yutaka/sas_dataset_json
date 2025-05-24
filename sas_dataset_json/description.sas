@@ -6,7 +6,7 @@ Author : Yutaka Morioka(sasyupi@gmail.com)
 Maintainer : Yutaka Morioka(sasyupi@gmail.com)
 License : MIT
 Encoding : UTF8
-Required : "Base SAS Software(9.4 and above)"
+Required : "Base SAS Software"
 ReqPackages :  
 
 DESCRIPTION START:
