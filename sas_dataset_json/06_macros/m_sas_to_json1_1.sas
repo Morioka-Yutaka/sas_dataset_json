@@ -162,11 +162,6 @@ run;
   %let	sourceSystem_version =%sysfunc(scan( &SYSVLONG,1,P));
 %end;
 
-data &dataset._1;
-/*attrib ITEMGROUPDATASEQ label="Record identifier" length=8.;*/
- set &library..&dataset;
-/* ITEMGROUPDATASEQ=_N_;*/
- run;
 
 /*Set dataset labels and last update dates*/
 data _null_;
@@ -189,11 +184,6 @@ proc sql  ;
 ;
 quit;
 
-/*Getting variable definitions*/
-ods noresults;
-ods output Position=Position;
-proc contents data=&dataset._1 varnum ;
-run;
 /*Getting extended attributes of variables*/
 data var_exattr;
  set sashelp.vxattr;
@@ -221,8 +211,8 @@ length itemOID name label dataType targetDataType  displayFormat  format $200.
 length keySequence 8. ;
  if 0 then set columns_0;
 set sashelp.vcolumn(rename=(name=_name label=_label length=_length));
-where libname = upcase("WORK");
-where same memname = upcase("&dataset._1");
+where libname = upcase("&library.");
+where same memname = upcase("&dataset.");
   call missing(of displayFormat);
   if name = "ITEMGROUPDATASEQ" then itemOID=_name;
   else itemOID = cats("IT.",_name);
@@ -260,6 +250,30 @@ run;
 proc sort data=columns_2 out=columns(drop =num _:);
  by num;
 run;
+data columns;
+ set columns;
+ dummyn=.;
+ dummyc="";
+run;
+
+data _null_;
+  set columns end=eof;
+  dummyn=.;
+  dummyc="";
+  call execute(cats("data r",_N_,"_columns;"));
+  call execute("set columns;");
+  call execute(cats("where monotonic() =",_N_,";"));
+  array arc _character_;
+  array arn _numeric_;
+  do over arc;
+    if missing(arc) then call execute(catx(" ","drop",vname(arc),";"));
+  end;
+  do over arn;
+    if missing(arn) then call execute(catx(" ","drop",vname(arn),";"));
+  end;
+  if eof then call symputx("columns_n",_N_);
+  call execute("run;");
+run;
 
 /*==================
 Output JSON
@@ -288,12 +302,14 @@ write values "label" "&DS_LABEL" ;
 
 write values "columns" ;/* attribute array */
  write open array;
-  export columns /   nosastags;
+  %do i = 1 %to &columns_n.;
+    export r&i._columns /   nosastags;
+  %end;
 write close;
 
  write values "rows" ;/* record array */
  write open array;
-      export &dataset._1 / nokeys fmtdatetime nosastags;
+      export &dataset. / nokeys fmtdatetime nosastags;
   write close;
 write close;
 run ;
