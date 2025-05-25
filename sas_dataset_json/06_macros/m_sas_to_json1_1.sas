@@ -107,7 +107,7 @@ Required SAS 9.4 and above
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-22]
   Last update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
-  Version        : 0.1.1
+  Version        : 0.1.2
   License        : MIT License
 
 *//*** HELP END ***/
@@ -214,8 +214,7 @@ set sashelp.vcolumn(rename=(name=_name label=_label length=_length));
 where libname = upcase("&library.");
 where same memname = upcase("&dataset.");
   call missing(of displayFormat);
-  if name = "ITEMGROUPDATASEQ" then itemOID=_name;
-  else itemOID = cats("IT.",_name);
+  itemOID = cats("IT.","&dataset..",_name);
   name = _name;  
   label=_label;
   displayFormat=format;
@@ -224,6 +223,32 @@ where same memname = upcase("&dataset.");
   length = _length;
   keySequence = .;
   num =varnum;
+ if index(upcase(displayFormat),"TIME") > 0
+    | index(upcase(displayFormat),"TOD") > 0
+    | index(upcase(displayFormat),"HOUR") > 0
+    then do;
+    dataType = "time";
+    targetDataType ="integer";
+  end;
+ if index(upcase(displayFormat),"DATE") > 0
+    | index(upcase(displayFormat),"DDMMYY") > 0
+    | index(upcase(displayFormat),"MMDDYY") > 0
+    | index(upcase(displayFormat),"YYMMDD") > 0
+    | index(upcase(displayFormat),"8601DA") > 0
+    then do;
+    dataType = "date";
+    targetDataType ="integer";
+  end;
+ if index(upcase(displayFormat),"DATETIME") > 0
+    | index(upcase(displayFormat),"DATEAMPM") > 0
+    | index(upcase(displayFormat),"8601DT") > 0
+    then do;
+    dataType = "datetime";
+    targetDataType ="integer";
+  end;
+
+
+
   keep Num itemOID name label dataType targetDataType  length displayFormat length keySequence ;
 run;
 
@@ -246,6 +271,7 @@ data columns_2;
  if ^missing(_displayFormat) then displayFormat=_displayFormat;
  if ^missing(_length) then length=input(_length,best.);
  if ^missing(_keySequence) then keySequence=input(_keySequence,best.);
+
 run;
 proc sort data=columns_2 out=columns(drop =num _:);
  by num;
