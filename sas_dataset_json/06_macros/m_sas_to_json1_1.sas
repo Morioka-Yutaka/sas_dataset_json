@@ -295,7 +295,7 @@ write values   "sourceSystem";
 write values "studyOID"  "&studyOID";
 write values  "metaDataVersionOID"  "&metaDataVersionOID";
 write values  "metaDataRef"  "define.xml";
-write values "itemGroupData" "IG.&dataset";
+write values "itemGroupOID" "IG.&dataset";
 write values "records" &tot_obs. ;
 write values "name" "&dataset" ;
 write values "label" "&DS_LABEL" ;
@@ -309,7 +309,7 @@ write close;
 
  write values "rows" ;/* record array */
  write open array;
-      export &dataset. / nokeys fmtdatetime nosastags;
+      export &library..&dataset. / nokeys fmtdatetime nosastags;
   write close;
 write close;
 run ;
