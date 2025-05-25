@@ -3,6 +3,9 @@ sas_dataset_json is a SAS macro package designed to support bi-directional conve
 
 <img width="180" alt="Image" src="https://github.com/user-attachments/assets/efdeab76-093f-436c-a3be-516b20684426" />
 
+# 日本ユーザー向け，日本語説明資料
+ https://www.docswell.com/s/6484025/5WW7G4-2025-05-26-023206
+
 # %m_sas_to_json1_1
   Description   : <br>
   		　Exports a SAS dataset to Dataset-JSON 
