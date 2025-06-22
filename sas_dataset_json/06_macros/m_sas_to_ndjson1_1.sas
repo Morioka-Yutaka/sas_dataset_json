@@ -1,12 +1,12 @@
 /*** HELP START ***//*
 
-Macro Name    : %m_sas_to_json1_1
-  Description   : Exports a SAS dataset to Dataset-JSON 
+Macro Name    : %m_sas_to_ndjson1_1
+  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
                   format (version 1.1). This macro is designed to
                   support clinical data interchange by generating
 
   Purpose       : 
-    - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .
+    - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.
     - Generates a metadata-rich datasetJSON with customizable elements.
@@ -15,7 +15,6 @@ Macro Name    : %m_sas_to_json1_1
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
     dataset               : Name of the input dataset (required).
-    pretty                : Whether to pretty-print the JSON (Y/N, default: Y).
     originator            : Organization or system creating the file (optional).
     fileOID               : File OID to uniquely identify the JSON (optional).
     studyOID              : Study OID used in the Define-XML reference (optional).
@@ -26,7 +25,7 @@ Macro Name    : %m_sas_to_json1_1
   Features:
     - Automatically detects and prioritizes extended attributes for variables.
     - Captures dataset-level metadata such as label and last modified date.
-    - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.
+    - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
 
   Dependencies:
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
@@ -36,23 +35,21 @@ Macro Name    : %m_sas_to_json1_1
     - Extended variable attributes (label, type, format, etc.) override defaults.
     - All variables are output with detailed metadata including data types,
       display formats, and lengths.
-    - Output file is saved as "&outpath.\&dataset..json".
+    - Output file is saved as "&outpath.\&dataset..ndjson".
 
   Example Usage:
 
 - [case 1] default, simple use
-%m_sas_to_json1_1(outpath =/project/json_out,
+%m_sas_to_ndjson1_1(outpath =/project/json_out,
                  library = adam,
                  dataset = adsl,
-                 pretty = Y
 );
 
 - [case 2] setting dataset-level metadata
-    %m_sas_to_json1_1(
+    %m_sas_to_ndjson1_1(
       outpath=/project/json_out,
       library=SDTM,
       dataset=AE,
-      pretty=Y,
       originator=ABC Pharma,
       fileOID=http://example.org/studyXYZ/define,
       studyOID=XYZ-123,
@@ -95,30 +92,24 @@ proc datasets nolist;
 ; 
 run;
 quit;
- %m_sas_to_json1_1(outpath = /project/json_out,
+ %m_sas_to_ndjson1_1(outpath = /project/json_out,
                  library = WORK,
                  dataset = adsl,
-                 pretty = Y
 );
 
 Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
-  Created Date   : [2025-05-22]
-  Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
-  past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
-  Last update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
-
-  Version        : 0.13
+  Created Date   : [2025-06-23]
+  Version        : 0.13 (first)
   License        : MIT License
 
 *//*** HELP END ***/
 
-%macro m_sas_to_json1_1(
+%macro m_sas_to_ndjson1_1(
 outpath=,
 library=WORK,
 dataset=,
-pretty=Y,
 originator=,
 fileOID=,
 studyOID=,
@@ -248,9 +239,6 @@ where same memname = upcase("&dataset.");
     dataType = "datetime";
     targetDataType ="integer";
   end;
-
-
-
   keep Num itemOID name label dataType targetDataType  length displayFormat length keySequence ;
 run;
 
@@ -306,8 +294,7 @@ run;
 /*==================
 Output JSON
 ====================*/
-proc json out = "&outpath.\&L_dataset..json" 
-  %if %upcase(&pretty)=Y %then %do;pretty %end;
+proc json out = "&outpath.\&L_dataset..ndjson" 
   nofmtdatetime;
 write open object ;
 write values "datasetJSONCreationDateTime"  "&creationDateTime";
@@ -334,12 +321,69 @@ write values "columns" ;/* attribute array */
     export r&i._columns /   nosastags;
   %end;
 write close;
-
- write values "rows" ;/* record array */
- write open array;
-      export &library..&dataset. / nokeys fmtdatetime nosastags;
-  write close;
 write close;
 run ;
 
-%mend m_sas_to_json1_1;
+proc sort data=columns_1(keep=name dataType targetDataType num) out=columns_3;
+ by num;
+run;
+
+data _null_;
+ set columns_3 end=eof;
+  call symputx( cats("_vname",num), name);
+  call symputx( cats("_vtype",num), dataType);
+  call symputx( cats("_tvtype",num), targetDataType);
+  if eof then call symputx( "_num_of_var", num);
+run;
+
+filename outndj "&outpath.\&L_dataset..ndjson";
+data _null_;
+  set &library..&dataset. ;
+  file outndj mod;
+  if _N_=1 then put;
+  put "[" @;
+  %do i  = 1 %to  %eval(&_num_of_var - 1);
+    %if %lowcase(&&_vtype&i) ^= integer and 
+         %lowcase(&&_vtype&i) ^= float and
+         %lowcase(&&_vtype&i) ^= double and
+         %lowcase(&&_vtype&i) ^= boolean
+    %then %do;
+      if not missing(&&_vname&i) then put '"' &&_vname&i ~ +(-1) '"' @;
+      else put '""' @;
+      put "," @;
+    %end;
+    %else %if
+         %lowcase(&&_vtype&i) = integer or 
+         %lowcase(&&_vtype&i) = float or
+         %lowcase(&&_vtype&i) = double or
+         %lowcase(&&_vtype&i) = boolean
+      %then %do;
+      if not missing(&&_vname&i) then put &&_vname&i +(-1) @;
+      else put "null" @;
+      put "," @;
+    %end;
+  %end;
+  %do i  = &_num_of_var %to  &_num_of_var;
+    %if %lowcase(&&_vtype&i) ^= integer and 
+         %lowcase(&&_vtype&i) ^= float and
+         %lowcase(&&_vtype&i) ^= double and
+         %lowcase(&&_vtype&i) ^= boolean
+    %then %do;
+      if not missing(&&_vname&i) then put '"' &&_vname&i ~ +(-1) '"' @;
+      else put '""' @;
+    %end;
+    %else %if
+         %lowcase(&&_vtype&i) = integer or 
+         %lowcase(&&_vtype&i) = float or
+         %lowcase(&&_vtype&i) = double or
+         %lowcase(&&_vtype&i) = boolean
+      %then %do;
+      if not missing(&&_vname&i) then put &&_vname&i +(-1) @;
+      else put "null" @;
+    %end;
+  %end;
+  put "]";
+run;
+filename outndj clear;
+
+%mend m_sas_to_ndjson1_1;

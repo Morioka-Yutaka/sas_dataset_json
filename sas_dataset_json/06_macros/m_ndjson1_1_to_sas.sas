@@ -1,10 +1,11 @@
 /*** HELP START ***//*
 
-Macro Name    : %m_json1_1_to_sas
-  Description   : Imports CDISC-compliant dataset-JSON v1.1 into a 
+Macro Name    : %m_ndjson1_1_to_sas
+  Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
                    SAS dataset, reconstructing structure and metadata including extended attributes.
 
   Key Features:
+	- Convert ndjson to dataset-json once internally
     - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
     - Extracts "root", "columns", and "rows" objects from JSON
     - Dynamically generates:
@@ -35,25 +36,51 @@ Macro Name    : %m_json1_1_to_sas
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
   Example Usage:
-    %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
-
+    %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
 
   Author         : [Yutaka Morioka]
-  Created Date   : [2025-05-23]
-  Last update Date   : [2025-06-23] -- initialize keySequence (0.13)
-
-  Version        : 0.13
+  Created Date   : [2025-06-23]
+  Version        : 0.13 (first)
   License        : MIT License
 
 *//*** HELP END ***/
 
-%macro m_json1_1_to_sas(inpath=,ds=);
-filename js "&inpath\&ds..json" encoding="utf-8";
-libname in json fileref=js ;
+%macro m_ndjson1_1_to_sas(inpath=,ds=);
+
+filename nljson "&inpath\&ds..ndjson";
+filename json temp;
+filename map temp;
+
+/* Convert the NDJSON to JSON */
+data ___wk1;
+	infile nljson end=eof;
+	do until (eof);
+		input;
+		line = _infile_;
+    output;
+	end;
+run;
+
+data ___wk2;
+set ___wk1 end=eof;
+file json;
+if _N_= 1 then do;
+  line =tranwrd(line,'}]}','}],"rows":[');
+end;
+if 1 < _N_ and ^eof then do;
+   line =tranwrd(line, ']' , '],');
+end;
+if eof then do;
+    line =tranwrd(line, ']' , ']]}');
+end;
+put line @;
+run;
+
+libname in json fileref=json ;
 proc copy in = in out = work ;
 run ;
 libname in clear ;
-filename js clear;
+filename json clear;
 
 %local ds_label;
 data _null_;
@@ -66,7 +93,7 @@ run;
 
 data dummy_columns;
 length targetDataType  displayFormat label  $200. keySequence 8.;
-call missing(of  targetDataType  displayFormat keySequence label);
+call missing(of  targetDataType  displayFormat label keySequence);
 run;
 
 data _null_;
@@ -167,8 +194,8 @@ if eof then do;
 end;
 run;
  
- %mend create;
+%mend create;
 
- %create;
+%create;
 
-%mend m_json1_1_to_sas;
+%mend m_ndjson1_1_to_sas;
