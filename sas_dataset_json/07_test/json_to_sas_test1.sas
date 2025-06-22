@@ -1,6 +1,6 @@
 /*** HELP START ***//*
 
-create dataset-json and  covert Dataset-JSON to Sas dataset.
+covert Dataset-JSON to Sas dataset.
 
 *//*** HELP END ***/
 
@@ -53,5 +53,5 @@ set adsl;
 run;
 
 proc datasets lib=work memtype=data nolist;
-  delete adsl alldata columns Dummy_columns Root Rows Sourcesystem ;
+  delete adsl alldata columns dummy_columns root rows Sourcesystem ;
 quit;

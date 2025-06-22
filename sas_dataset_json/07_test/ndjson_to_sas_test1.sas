@@ -1,6 +1,6 @@
 /*** HELP START ***//*
 
-Sas dataset convert to Dataset-JSON(using SAS extended value)
+covert ndjson to Sas dataset.
 
 *//*** HELP END ***/
 
@@ -43,20 +43,15 @@ quit;
                  pretty = Y
 );
 proc datasets lib=work memtype=data nolist;
-  delete
-ADSL
-COLUMNS
-COLUMNS_0
-COLUMNS_1
-COLUMNS_2
-COLUMNS_3
-DUMMY_VAR_EXATTR_T
-R1_COLUMNS
-R2_COLUMNS
-R3_COLUMNS
-R4_COLUMNS
-R5_COLUMNS
-VAR_EXATTR
-VAR_EXATTR_T
- ;
+  delete adsl_1 columns columns_0 columns_1 columns_2 Dummy_var_exattr_t Position Var_exattr Var_exattr_t ;
+quit;
+%m_ndjson1_1_to_sas(inpath=%sysfunc(pathname(work))
+,ds=adsl)
+
+data mylib1.json_to_sas_test1;
+set adsl;
+run;
+
+proc datasets lib=work memtype=data nolist;
+  delete adsl alldata columns dummy_columns root rows Sourcesystem ;
 quit;
