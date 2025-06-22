@@ -9,17 +9,17 @@
 ### Version information:
   
 - Package: sas_dataset_json
-- Version: 0.1.0
-- Generated: 2025-05-22T08:23:31
+- Version: 0.1.3
+- Generated: 2025-06-23T07:17:41
 - Author(s): Yutaka Morioka(sasyupi@gmail.com)
 - Maintainer(s): Yutaka Morioka(sasyupi@gmail.com)
 - License: MIT
-- File SHA256: `F*65B1592B52BA908A2021539550B043FA4C2311C2E564A52D0BAE002FF3B90884` for this version
-- Content SHA256: `C*2C5E51E958F555508726A1559AB99259FE6DF89759A904BA7653C662837FB904` for this version
+- File SHA256: `F*8812C153FFE4263B4069924E458B6E9284086AB652F2C6AD3AAC4B50CB38F218` for this version
+- Content SHA256: `C*BB1FB73A11322124918C63E2EC71899EEBFF3CFEE966C051EA80C907BDFF087B` for this version
   
 ---
  
-# The `sas_dataset_json` package, version: `0.1.0`;
+# The `sas_dataset_json` package, version: `0.1.3`;
   
 ---
  
@@ -46,7 +46,7 @@ Parses metadata and records from JSON to reconstruct SAS datasets
 ---
  
 Required SAS Components: 
-  - Base SAS Software(9.4 and above)
+  - Base SAS Software
   
 ---
  
@@ -62,10 +62,13 @@ The `sas_dataset_json` package consists of the following content:
  
 1. [`mylib1` libname ](#mylib1-libname-1 )
 2. [`adsl` data ](#adsl-data-2 )
-3. [`%m_sas_to_json1_1()` macro ](#msastojson11-macros-3 )
+3. [`%m_json1_1_to_sas()` macro ](#mjson11tosas-macros-3 )
+4. [`%m_ndjson1_1_to_sas()` macro ](#mndjson11tosas-macros-4 )
+5. [`%m_sas_to_json1_1()` macro ](#msastojson11-macros-5 )
+6. [`%m_sas_to_ndjson1_1()` macro ](#msastondjson11-macros-6 )
   
  
-4. [License note](#license)
+7. [License note](#license)
   
 ---
  
@@ -83,7 +86,105 @@ Create mylib library under work directory.
   
 ---
  
-## `%m_sas_to_json1_1()` macro <a name="msastojson11-macros-3"></a> ######
+## `%m_json1_1_to_sas()` macro <a name="mjson11tosas-macros-3"></a> ######
+
+Macro Name    : %m_json1_1_to_sas
+  Description   : Imports CDISC-compliant dataset-JSON v1.1 into a 
+                   SAS dataset, reconstructing structure and metadata including extended attributes.
+
+  Key Features:
+    - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
+    - Extracts "root", "columns", and "rows" objects from JSON
+    - Dynamically generates:
+        - LABEL, FORMAT, and RENAME statements
+        - INPUT conversion logic for ISO8601 date/datetime types
+    - Automatically applies:
+        - Dataset-level metadata via PROC DATASETS and XATTR
+        - Variable-level extended attributes such as:
+            - dataType
+            - targetDataType
+            - displayFormat
+            - keySequence
+            - length
+    - Provides warnings for unsupported data types (e.g., decimal)
+
+  Parameters:
+    inpath : Path to the folder containing the dataset-JSON file
+    ds     : SAS dataset name to create (derived from the file name)
+
+  Requirements:
+    - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)
+    - Input JSON must follow the dataset-JSON v1.1 specification
+
+  Notes:
+    - "decimal" targetDataType is not natively supported in SAS;
+      values are read as numeric using the `best.` format with a warning
+    - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
+    - Extended metadata attributes are added using PROC DATASETS/XATTR
+
+  Example Usage:
+    %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
+
+
+  Author         : [Yutaka Morioka]
+  Created Date   : [2025-05-23]
+  Last update Date   : [2025-06-23] -- initialize keySequence (0.13)
+
+  Version        : 0.13
+  License        : MIT License
+
+  
+---
+ 
+## `%m_ndjson1_1_to_sas()` macro <a name="mndjson11tosas-macros-4"></a> ######
+
+Macro Name    : %m_ndjson1_1_to_sas
+  Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
+                   SAS dataset, reconstructing structure and metadata including extended attributes.
+
+  Key Features:
+	- Convert ndjson to dataset-json once internally
+    - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
+    - Extracts "root", "columns", and "rows" objects from JSON
+    - Dynamically generates:
+        - LABEL, FORMAT, and RENAME statements
+        - INPUT conversion logic for ISO8601 date/datetime types
+    - Automatically applies:
+        - Dataset-level metadata via PROC DATASETS and XATTR
+        - Variable-level extended attributes such as:
+            - dataType
+            - targetDataType
+            - displayFormat
+            - keySequence
+            - length
+    - Provides warnings for unsupported data types (e.g., decimal)
+
+  Parameters:
+    inpath : Path to the folder containing the dataset-JSON file
+    ds     : SAS dataset name to create (derived from the file name)
+
+  Requirements:
+    - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)
+    - Input JSON must follow the dataset-JSON v1.1 specification
+
+  Notes:
+    - "decimal" targetDataType is not natively supported in SAS;
+      values are read as numeric using the `best.` format with a warning
+    - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
+    - Extended metadata attributes are added using PROC DATASETS/XATTR
+
+  Example Usage:
+    %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
+
+  Author         : [Yutaka Morioka]
+  Created Date   : [2025-06-23]
+  Version        : 0.13 (first)
+  License        : MIT License
+
+  
+---
+ 
+## `%m_sas_to_json1_1()` macro <a name="msastojson11-macros-5"></a> ######
 
 Macro Name    : %m_sas_to_json1_1
   Description   : Exports a SAS dataset to Dataset-JSON 
@@ -110,7 +211,6 @@ Macro Name    : %m_sas_to_json1_1
 
   Features:
     - Automatically detects and prioritizes extended attributes for variables.
-    - Adds sequential record identifiers (ITEMGROUPDATASEQ).
     - Captures dataset-level metadata such as label and last modified date.
     - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.
 
@@ -187,11 +287,124 @@ quit;
                  pretty = Y
 );
 
- Required SAS 9.4 and above
+Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-22]
-  Version        : 0.10
+  Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
+  past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
+  Last update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+
+  Version        : 0.13
+  License        : MIT License
+
+  
+---
+ 
+## `%m_sas_to_ndjson1_1()` macro <a name="msastondjson11-macros-6"></a> ######
+
+Macro Name    : %m_sas_to_ndjson1_1
+  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
+                  format (version 1.1). This macro is designed to
+                  support clinical data interchange by generating
+
+  Purpose       : 
+    - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
+    - Automatically extracts metadata such as labels, data types, formats,
+      and extended attributes if defined.
+    - Generates a metadata-rich datasetJSON with customizable elements.
+
+  Input Parameters:
+    outpath               : Path to output directory (default: WORK directory).
+    library               : Library reference for input dataset (default: WORK).
+    dataset               : Name of the input dataset (required).
+    originator            : Organization or system creating the file (optional).
+    fileOID               : File OID to uniquely identify the JSON (optional).
+    studyOID              : Study OID used in the Define-XML reference (optional).
+    metaDataVersionOID    : Metadata version OID (optional).
+    sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).
+    sourceSystem_version  : Source system version (default: from &SYSVLONG).
+
+  Features:
+    - Automatically detects and prioritizes extended attributes for variables.
+    - Captures dataset-level metadata such as label and last modified date.
+    - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
+
+  Dependencies:
+    - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
+    - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.
+
+  Notes:
+    - Extended variable attributes (label, type, format, etc.) override defaults.
+    - All variables are output with detailed metadata including data types,
+      display formats, and lengths.
+    - Output file is saved as "&outpath.\&dataset..ndjson".
+
+  Example Usage:
+
+- [case 1] default, simple use
+%m_sas_to_ndjson1_1(outpath =/project/json_out,
+                 library = adam,
+                 dataset = adsl,
+);
+
+- [case 2] setting dataset-level metadata
+    %m_sas_to_ndjson1_1(
+      outpath=/project/json_out,
+      library=SDTM,
+      dataset=AE,
+      originator=ABC Pharma,
+      fileOID=http://example.org/studyXYZ/define,
+      studyOID=XYZ-123,
+      metaDataVersionOID=MDV.XYZ.1.0,
+      sourceSystem_name=SAS 9.4,
+      sourceSystem_version=9.4M7
+    );
+
+- [case 3] set metadata by SAS extended attribute
+proc datasets nolist;                             
+   modify adsl;     
+   xattr add ds originator="X corp."
+                    fileOID="www.cdisc.org/StudyMSGv2/1/Define-XML_2.1.0/2024-11-11/"
+          					studyOID="XX001-001"
+          					metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
+                    sourceSystem_name="SASxxxx"
+                    sourceSystem_version="9.4xxxx"
+	;  
+   xattr add var 
+                    STUDYID (label="Study Identifier"
+                                 dataType="string"
+                                 length=8
+                                 keySequence=1) 
+                    USUBJID (label="Unique Subject Identifier"
+                                 dataType="string"
+                                 length=7
+                                 keySequence=2) 
+                    RFSTDTC (label="Subject Reference Start Date/Time"
+                                 dataType="date")
+                    AGE (label="Age"
+                           dataType="integer"
+                           length=2)
+                    TRTSDT (label="Date of First Exposure to Treatment"
+                           dataType="date"
+                           targetDataType="integer"
+                           displayFormat="E8601DA.")
+
+ ;
+
+; 
+run;
+quit;
+ %m_sas_to_ndjson1_1(outpath = /project/json_out,
+                 library = WORK,
+                 dataset = adsl,
+);
+
+Required SAS 9.4 and above
+
+  Author         : [Yutaka Morioka]
+  Created Date   : [2025-06-23]
+  Version        : 0.13 (first)
   License        : MIT License
 
   
