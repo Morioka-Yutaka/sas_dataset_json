@@ -145,7 +145,7 @@ quit;<br>
     %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);<br>
 
 # version history<br>
-0.1.3(23Jun2025): %m_sas_to_json1_1--Apply e8601dt format for dbLastModifiedDateTime<br>
+0.1.3(23Jun2025): %m_sas_to_json1_1--Apply the e8601DT format to the LastModifiedDateTime.<br>
 0.1.2(25May2025): %m_sas_to_json1_1--Modified to not output data attributes with empty definitions.<br>
 0.1.1(23May2025): Add %m_json1_1_to_sas<br>
 0.1.0(22May2025): Initial version<br>
