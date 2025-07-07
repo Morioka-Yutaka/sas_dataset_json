@@ -46,11 +46,14 @@ sas_dataset_json is a SAS macro package designed to support bi-directional conve
 
   Example Usage:<br>
 - [case 1] default, simple use<br>
+~~~sas  
 %m_sas_to_json1_1(outpath =/project/json_out,<br>
                  library = adam,<br>
                  dataset = adsl,<br>
                  pretty = Y<br>
-);<br>
+);
+~~~
+<br>
 
 - [case 2] setting dataset-level metadata<br>
     %m_sas_to_json1_1(<br>
