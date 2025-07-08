@@ -133,9 +133,10 @@ quit;
     - Provides warnings for unsupported data types (e.g., decimal)<br>
 
   Parameters:<br>
-    inpath : Path to the folder containing the dataset-JSON file<br>
-    ds     : SAS dataset name to create (derived from the file name)<br>
-
+~~~text 
+    inpath : Path to the folder containing the dataset-JSON file
+    ds     : SAS dataset name to create (derived from the file name)
+~~~
   Requirements:<br>
     - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)<br>
     - Input JSON must follow the dataset-JSON v1.1 specification<br>
@@ -162,7 +163,8 @@ quit;
       and extended attributes if defined.
     - Generates a metadata-rich datasetJSON with customizable elements.
 
-  Input Parameters:
+  Parameters:
+ ~~~text 
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
     dataset               : Name of the input dataset (required).
@@ -172,6 +174,7 @@ quit;
     metaDataVersionOID    : Metadata version OID (optional).
     sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).
     sourceSystem_version  : Source system version (default: from &SYSVLONG).]]
+~~~
 
   Features:
     - Automatically detects and prioritizes extended attributes for variables.
@@ -272,9 +275,10 @@ quit;
     - Provides warnings for unsupported data types (e.g., decimal)
 
   Parameters:
+~~~text 
     inpath : Path to the folder containing the dataset-JSON file
     ds     : SAS dataset name to create (derived from the file name)
-
+~~~
   Requirements:
     - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)
     - Input JSON must follow the dataset-JSON v1.1 specification
