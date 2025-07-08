@@ -76,11 +76,11 @@ proc datasets nolist;
    modify adsl;     
    xattr add ds originator="X corp."
                     fileOID="www.cdisc.org/StudyMSGv2/1/Define-XML_2.1.0/2024-11-11/"
-          					studyOID="XX001-001"
-          					metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
+　　　　　　　　　　　studyOID="XX001-001"
+                     metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
                     sourceSystem_name="SASxxxx"
                     sourceSystem_version="9.4xxxx"
-	;  
+   ;  
    xattr add var 
                     STUDYID (label="Study Identifier"
                                  dataType="string"
@@ -99,14 +99,13 @@ proc datasets nolist;
                            dataType="date"
                            targetDataType="integer"
                            displayFormat="E8601DA.") ;
-;
+   ;
 run;
 quit;
  %m_sas_to_json1_1(outpath = /project/json_out,
                  library = WORK,
                  dataset = adsl,
-                 pretty = Y
-);
+                 pretty = Y);
 ~~~
 
 
@@ -146,7 +145,7 @@ quit;
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
   Example Usage:
-  ~~~sas  
+~~~sas  
     %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
 
@@ -190,12 +189,15 @@ quit;
   Example Usage:
 
 - [case 1] default, simple use
+~~~sas  
 %m_sas_to_ndjson1_1(outpath =/project/json_out,
                  library = adam,
                  dataset = adsl,
 );
+~~~
 
 - [case 2] setting dataset-level metadata
+- ~~~sas  
     %m_sas_to_ndjson1_1(
       outpath=/project/json_out,
       library=SDTM,
@@ -207,17 +209,19 @@ quit;
       sourceSystem_name=SAS 9.4,
       sourceSystem_version=9.4M7
     );
+  ~~~
 
 - [case 3] set metadata by SAS extended attribute
+- ~~~sas  
 proc datasets nolist;                             
    modify adsl;     
    xattr add ds originator="X corp."
                     fileOID="www.cdisc.org/StudyMSGv2/1/Define-XML_2.1.0/2024-11-11/"
-          					studyOID="XX001-001"
-          					metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
+          	    studyOID="XX001-001"
+          	    metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
                     sourceSystem_name="SASxxxx"
                     sourceSystem_version="9.4xxxx"
-	;  
+   ;  
    xattr add var 
                     STUDYID (label="Study Identifier"
                                  dataType="string"
@@ -235,17 +239,14 @@ proc datasets nolist;
                     TRTSDT (label="Date of First Exposure to Treatment"
                            dataType="date"
                            targetDataType="integer"
-                           displayFormat="E8601DA.")
-
- ;
-
-; 
+                           displayFormat="E8601DA.");
+ ; 
 run;
 quit;
  %m_sas_to_ndjson1_1(outpath = /project/json_out,
                  library = WORK,
-                 dataset = adsl,
-);
+                 dataset = adsl);
+~~~
 
 # %m_ndjson1_1_to_sas
   Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
@@ -283,8 +284,9 @@ quit;
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
   Example Usage:
+  ~~~sas  
     %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
-
+~~~
 # version history<br>
 0.1.3(23Jun2025): Support NDJSON, add %m_sas_to_ndjson1_1 and %m_ndjson1_1_to_sas
 		  %m_sas_to_json1_1--Apply the e8601DT format to the LastModifiedDateTime.<br>
