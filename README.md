@@ -55,58 +55,60 @@ sas_dataset_json is a SAS macro package designed to support bi-directional conve
 <br>
 
 - [case 2] setting dataset-level metadata<br>
-    %m_sas_to_json1_1(<br>
-      outpath=/project/json_out,<br>
-      library=SDTM,<br>
-      dataset=AE,<br>
-      pretty=Y,<br>
-      originator=ABC Pharma,<br>
-      fileOID=http://example.org/studyXYZ/define,<br>
-      studyOID=XYZ-123,<br>
-      metaDataVersionOID=MDV.XYZ.1.0,<br>
-      sourceSystem_name=SAS 9.4,<br>
-      sourceSystem_version=9.4M7<br>
-    );<br>
+~~~sas  
+    %m_sas_to_json1_1(
+      outpath=/project/json_out,
+      library=SDTM,
+      dataset=AE,
+      pretty=Y,
+      originator=ABC Pharma,
+      fileOID=http://example.org/studyXYZ/define,
+      studyOID=XYZ-123,
+      metaDataVersionOID=MDV.XYZ.1.0,
+      sourceSystem_name=SAS 9.4,
+      sourceSystem_version=9.4M7
+    );
+~~~
 
 - [case 3] set metadata by SAS extended attribute<br>
-proc datasets nolist;                             <br>
-   modify adsl;     <br>
-   xattr add ds originator="X corp."<br>
-                    fileOID="www.cdisc.org/StudyMSGv2/1/Define-XML_2.1.0/2024-11-11/"<br>
-          					studyOID="XX001-001"<br>
-          					metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"<br>
-                    sourceSystem_name="SASxxxx"<br>
-                    sourceSystem_version="9.4xxxx"<br>
-	;  <br>
-   xattr add var <br>
-                    STUDYID (label="Study Identifier"<br>
-                                 dataType="string"<br>
-                                 length=8<br>
-                                 keySequence=1) <br>
-                    USUBJID (label="Unique Subject Identifier"<br>
-                                 dataType="string"<br>
-                                 length=7<br>
-                                 keySequence=2) <br>
-                    RFSTDTC (label="Subject Reference Start Date/Time"<br>
-                                 dataType="date")<br>
-                    AGE (label="Age"<br>
-                           dataType="integer"<br>
-                           length=2)<br>
-                    TRTSDT (label="Date of First Exposure to Treatment"<br>
-                           dataType="date"<br>
-                           targetDataType="integer"<br>
-                           displayFormat="E8601DA.")<br>
-
- ;<br>
-<br>
-; <br>
-run;<br>
-quit;<br>
+~~~sas  
+proc datasets nolist;                             
+   modify adsl;     
+   xattr add ds originator="X corp."
+                    fileOID="www.cdisc.org/StudyMSGv2/1/Define-XML_2.1.0/2024-11-11/"
+          					studyOID="XX001-001"
+          					metaDataVersionOID="MDV.MSGv2.0.SDTMIG.3.4.SDTM.2.0"
+                    sourceSystem_name="SASxxxx"
+                    sourceSystem_version="9.4xxxx"
+	;  
+   xattr add var 
+                    STUDYID (label="Study Identifier"
+                                 dataType="string"
+                                 length=8
+                                 keySequence=1) 
+                    USUBJID (label="Unique Subject Identifier"
+                                 dataType="string"
+                                 length=7
+                                 keySequence=2)
+                    RFSTDTC (label="Subject Reference Start Date/Time"
+                                 dataType="date")
+                    AGE (label="Age"
+                           dataType="integer"
+                           length=2)
+                    TRTSDT (label="Date of First Exposure to Treatment"
+                           dataType="date"
+                           targetDataType="integer"
+                           displayFormat="E8601DA.") ;
+;
+run;
+quit;
  %m_sas_to_json1_1(outpath = /project/json_out,
                  library = WORK,
                  dataset = adsl,
                  pretty = Y
 );
+~~~
+
 
 # %m_json1_1_to_sas
  Description   : <br>
@@ -143,8 +145,10 @@ quit;<br>
     - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
-  Example Usage:<br>
-    %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);<br>
+  Example Usage:
+  ~~~sas  
+    %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
+~~~
 
 # %m_sas_to_ndjson1_1
   Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
