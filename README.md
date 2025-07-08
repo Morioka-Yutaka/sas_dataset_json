@@ -17,18 +17,20 @@ sas_dataset_json is a SAS macro package designed to support bi-directional conve
       and extended attributes if defined.<br>
     - Generates a metadata-rich datasetJSON with customizable elements.<br>
 
-  Input Parameters:<br>
-    outpath               : Path to output directory (default: WORK directory).<br>
-    library               : Library reference for input dataset (default: WORK).<br>
-    dataset               : Name of the input dataset (required).<br>
-    pretty                : Whether to pretty-print the JSON (Y/N, default: Y).<br>
-    originator            : Organization or system creating the file (optional).<br>
-    fileOID               : File OID to uniquely identify the JSON (optional).<br>
-    studyOID              : Study OID used in the Define-XML reference (optional).<br>
-    metaDataVersionOID    : Metadata version OID (optional).<br>
-    sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).<br>
-    sourceSystem_version  : Source system version (default: from &SYSVLONG).<br>
 
+  Parameters:<br>
+~~~sas  
+    outpath               : Path to output directory (default: WORK directory).
+    library               : Library reference for input dataset (default: WORK).
+    dataset               : Name of the input dataset (required).
+    pretty                : Whether to pretty-print the JSON (Y/N, default: Y).
+    originator            : Organization or system creating the file (optional).
+    fileOID               : File OID to uniquely identify the JSON (optional).
+    studyOID              : Study OID used in the Define-XML reference (optional).
+    metaDataVersionOID    : Metadata version OID (optional).
+    sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).
+    sourceSystem_version  : Source system version (default: from &SYSVLONG).
+~~~
   Features:<br>
     - Automatically detects and prioritizes extended attributes for variables.<br>
     - Captures dataset-level metadata such as label and last modified date.<br>
