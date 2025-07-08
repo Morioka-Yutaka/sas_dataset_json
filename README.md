@@ -212,7 +212,7 @@ quit;
   ~~~
 
 - [case 3] set metadata by SAS extended attribute
-- ~~~sas  
+~~~sas  
 proc datasets nolist;                             
    modify adsl;     
    xattr add ds originator="X corp."
