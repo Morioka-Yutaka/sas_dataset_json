@@ -197,7 +197,7 @@ quit;
 ~~~
 
 - [case 2] setting dataset-level metadata
-  ~~~sas  
+~~~sas  
     %m_sas_to_ndjson1_1(
       outpath=/project/json_out,
       library=SDTM,
@@ -209,7 +209,7 @@ quit;
       sourceSystem_name=SAS 9.4,
       sourceSystem_version=9.4M7
     );
-  ~~~
+~~~
 
 - [case 3] set metadata by SAS extended attribute
 ~~~sas  
