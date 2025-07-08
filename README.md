@@ -19,7 +19,7 @@ sas_dataset_json is a SAS macro package designed to support bi-directional conve
 
 
   Parameters:<br>
-~~~sas  
+~~~text  
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
     dataset               : Name of the input dataset (required).
