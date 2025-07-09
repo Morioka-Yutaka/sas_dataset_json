@@ -319,9 +319,9 @@ Secondly, enable the SAS Packages Framework.
 ### 2. Install SAS package  
 Install SAS package you want to use using %installPackage() in SPFinit.sas.
 ~~~sas      
-%installPackage(packagename, sourcePath="\github\path\for\packagename.zip")
+%installPackage(packagename, sourcePath=\github\path\for\packagename)
 ~~~
-(e.g. %installPackage(ABC, sourcePath="https://github.com/XXXXX/ABC/raw/main/"))  
+(e.g. %installPackage(ABC, sourcePath=https://github.com/XXXXX/ABC/raw/main/))  
 ### 3. Load SAS package  
 Load SAS package you want to use using %loadPackage() in SPFinit.sas.
 ~~~sas      
