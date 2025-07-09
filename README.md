@@ -300,24 +300,31 @@ quit;
 0.1.1(23May2025): Add %m_json1_1_to_sas<br>
 0.1.0(22May2025): Initial version<br>
 
-# What is SAS Packages?
-The package is built on top of **SAS Packages framework(SPF)** created by Bartosz Jablonski.<br>
-For more on SAS Packages framework, see [SASPAC](https://github.com/yabwon/SAS_PACKAGES).<br>
-You can also find more SAS Packages(SASPAC) in [GitHub](https://github.com/SASPAC)<br>
+## What is SAS Packages?  
+PharmaForest is a repository of SAS packages. These packages are built on top of **SAS Packages framework(SPF)**, which was developed by Bartosz Jablonski.  
+For more information about SAS Packages framework, see [SAS_PACKAGES](https://github.com/yabwon/SAS_PACKAGES).  
+You can also find more SAS Packages(SASPACs) in [SASPAC](https://github.com/SASPAC).
 
-
-# How to use SAS Packages Framework(SPF)? (quick start)
-Create directory for your packages and assign a fileref to it.
+## How to use SAS Packages? (quick start)
+### 1. Set-up SPF(SAS Packages Framework)
+Firstly, create directory for your packages and assign a fileref to it.
 ~~~sas      
 filename packages "\path\to\your\packages";
 ~~~
-Enable the SAS Packages Framework (if you have not done it yet):
-
+Secondly, enable the SAS Packages Framework.  
+(If you don't have SAS Packages Framework, installed follow the instruction in [SPF documentation](https://github.com/yabwon/SAS_PACKAGES/tree/main/SPF/Documentation) to install SAS Packages Framework.)  
 ~~~sas      
 %include packages(SPFinit.sas)
+~~~  
+### 2. Install SAS package  
+Install SAS package you want to use using %installPackage() in SPFinit.sas.
+~~~sas      
+%installPackage(packagename, sourcePath="\github\path\for\packagename.zip")
 ~~~
-(If you don't have SAS Packages Framework installed follow the instruction.)
-
-You can learn from the following training materials by Bartosz Jablonski for source files and folders structure of SAS packages.<br>
-[My first SAS Package -a How To](https://github.com/yabwon/SAS_PACKAGES/blob/main/SPF/Documentation/SAS(r)%20packages%20-%20the%20way%20to%20share%20(a%20how%20to)-%20Paper%204725-2020%20-%20extended.pdf).<br>
-[SAS Packages - The Way To Share (a How To)](https://github.com/yabwon/SAS_PACKAGES/blob/main/SPF/Documentation/SAS(r)%20packages%20-%20the%20way%20to%20share%20(a%20how%20to)-%20Paper%204725-2020%20-%20extended.pdf)
+(e.g. %installPackage(ABC, sourcePath="https://github.com/XXXXX/ABC/raw/main/"))  
+### 3. Load SAS package  
+Load SAS package you want to use using %loadPackage() in SPFinit.sas.
+~~~sas      
+%loadPackage(packagename)
+~~~
+### Enjoy😁
