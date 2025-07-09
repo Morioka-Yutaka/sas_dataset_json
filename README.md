@@ -306,7 +306,7 @@ For more on SAS Packages framework, see [SASPAC](https://github.com/yabwon/SAS_P
 You can also find more SAS Packages(SASPAC) in [GitHub](https://github.com/SASPAC)<br>
 
 
-## How to use SAS Packages Framework(SPF)? (quick start)
+# How to use SAS Packages Framework(SPF)? (quick start)
 Create directory for your packages and assign a fileref to it.
 ~~~sas      
 filename packages "\path\to\your\packages";
