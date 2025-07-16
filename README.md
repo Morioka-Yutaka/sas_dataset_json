@@ -312,7 +312,7 @@ Firstly, create directory for your packages and assign a fileref to it.
 filename packages "\path\to\your\packages";
 ~~~
 Secondly, enable the SAS Packages Framework.  
-(If you don't have SAS Packages Framework, installed follow the instruction in [SPF documentation](https://github.com/yabwon/SAS_PACKAGES/tree/main/SPF/Documentation) to install SAS Packages Framework.)  
+(If you don't have SAS Packages Framework installed, follow the instruction in [SPF documentation](https://github.com/yabwon/SAS_PACKAGES/tree/main/SPF/Documentation) to install SAS Packages Framework.)  
 ~~~sas      
 %include packages(SPFinit.sas)
 ~~~  
