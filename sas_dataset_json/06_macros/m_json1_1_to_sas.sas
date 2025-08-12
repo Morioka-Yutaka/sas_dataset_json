@@ -40,9 +40,12 @@ Macro Name    : %m_json1_1_to_sas
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-23]
-  Last update Date   : [2025-06-23] -- initialize keySequence (0.13)
+  Past update Date   : [2025-06-23] -- initialize keySequence (0.13)
+  Last update Date   : [2025-08-13] --  
+   Setting the length of the dataset from dataset-json when the type is string.
+   Bug fix for when the variable label in dataset-json is null  (0.20)
 
-  Version        : 0.13
+  Version        : 0.20
   License        : MIT License
 
 *//*** HELP END ***/
@@ -74,10 +77,15 @@ length targetDataType  displayFormat label  $200. keySequence 8.;
 set columns end=eof;
 if 0 then set dummy_columns;
 if ^missing(displayFormat) and index(displayFormat,".") = 0 then displayFormat = cats(displayFormat,".");
-
+call symputx( cats("vname",ordinal_columns),name);
 if missing(targetDataType) then do;
  call symputx( cats("rename",ordinal_columns), cats("rename element",ordinal_columns)||"="|| name||";" );
- call symputx( cats("label",ordinal_columns), cats("element",ordinal_columns)||"='"|| cats(label,"'") );
+  if ^missing(label) then do;
+   call symputx( cats("label",ordinal_columns), cats("element",ordinal_columns)||"='"|| cats(label,"'") );
+  end;
+  else do;
+   call symputx( cats("label",ordinal_columns), cats("element",ordinal_columns)||"=' "|| cats(label,"'") );
+  end;
  if ^missing(displayFormat) then do;
   call symputx( cats("format",ordinal_columns), cats("element",ordinal_columns)||" "|| cats(displayFormat,"") );
  end;
@@ -89,13 +97,18 @@ else if ^missing(targetDataType) then do;
  if lowcase(targetDataType) = "integer" then do;
    if lowcase(dataType) = "date" then call symputx( cats("rename",ordinal_columns), name||"= input("||cats("element",ordinal_columns)||",?? E8601DA.); drop "||cats("element",ordinal_columns)||";" );
    else if lowcase(dataType) = "datetime" then call symputx( cats("rename",ordinal_columns), name||"= input("||cats("element",ordinal_columns)||",?? E8601DT.); drop "||cats("element",ordinal_columns)||";" );
+   else if lowcase(dataType) = "time" then call symputx( cats("rename",ordinal_columns), name||"= input("||cats("element",ordinal_columns)||",?? E8601TM.); drop "||cats("element",ordinal_columns)||";" );
 end; 
  else if lowcase(targetDataType) = "decimal" then do;
    put "WARNING: The decimal type is not supported in SAS. Temporarily numerical in best. format." +2 name = ;
    call symputx( cats("rename",ordinal_columns), name||"= input("||cats("element",ordinal_columns)||",best.); drop "||cats("element",ordinal_columns)||";" );
  end; 
-
- call symputx( cats("label",ordinal_columns), name||"='"|| cats(label,"'") );
+ if ^missing(label) then do;
+  call symputx( cats("label",ordinal_columns), name||"='"|| cats(label,"'") );
+ end;
+  else do;
+   call symputx( cats("label",ordinal_columns), cats("element",ordinal_columns)||"=' "|| cats(label,"'") );
+  end;
  if ^missing(displayFormat) then do;
   call symputx( cats("format",ordinal_columns), name||" "|| cats(displayFormat,"") );
  end;
@@ -109,12 +122,12 @@ options mprint;
 
 %macro create;
 data &name(&ds_label drop= ordinal_root ordinal_rows );
+ set rows;
   label
  %do i = 1 %to &last_ordinal_columns;
   &&label&i
  %end;
  ;
- set rows;
  %do i = 1 %to &last_ordinal_columns;
   &&rename&i
  %end;
@@ -125,6 +138,24 @@ data &name(&ds_label drop= ordinal_root ordinal_rows );
  ;
  ;
  run;
+ data &name(&ds_label );
+ informat
+ %do i = 1 %to &last_ordinal_columns;
+  &&vname&i
+ %end;
+ ;
+set  &name;
+run;
+
+data _null_;
+  set columns end=eof;
+  where lowcase(dataType) = "string";
+  if _N_=1 then call execute("proc sql;alter table &ds. modify");
+  code=catx(" ",name,cats("char(",length,")"));
+  if ^eof then code=cats(code,",");
+  call execute(code);
+  if eof then call execute(";quit;");
+run;
 
 data _null_;
  set root;

@@ -101,7 +101,10 @@ Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-06-23]
-  Version        : 0.13 (first)
+  Last update Date   : [2025-08-13] --  
+    When the E8601DT format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  
+    Added escape processing when double quotation marks are included in data.
+  Version        : 0.20 
   License        : MIT License
 
 *//*** HELP END ***/
@@ -171,7 +174,7 @@ call symputx("creationDateTime",put(datetime(),e8601dt.));
 run;
 
 /*Obtaining the number of observations*/
-proc sql  ;
+proc sql  noprint;
  select count(*) into: tot_obs
  from &library..&dataset
 ;
@@ -206,7 +209,7 @@ length keySequence 8. ;
 set sashelp.vcolumn(rename=(name=_name label=_label length=_length));
 where libname = upcase("&library.");
 where same memname = upcase("&dataset.");
-  call missing(of displayFormat);
+  call missing(of targetDataType displayFormat);
   itemOID = cats("IT.","&dataset..",_name);
   name = _name;  
   label=_label;
@@ -219,6 +222,7 @@ where same memname = upcase("&dataset.");
  if index(upcase(displayFormat),"TIME") > 0
     | index(upcase(displayFormat),"TOD") > 0
     | index(upcase(displayFormat),"HOUR") > 0
+    | index(upcase(displayFormat),"8601TM") > 0
     then do;
     dataType = "time";
     targetDataType ="integer";
@@ -338,7 +342,9 @@ run;
 
 filename outndj "&outpath.\&L_dataset..ndjson";
 data _null_;
+length temp $32767.;
   set &library..&dataset. ;
+  call missing(temp);
   file outndj mod;
   if _N_=1 then put;
   put "[" @;
@@ -348,7 +354,10 @@ data _null_;
          %lowcase(&&_vtype&i) ^= double and
          %lowcase(&&_vtype&i) ^= boolean
     %then %do;
-      if not missing(&&_vname&i) then put '"' &&_vname&i ~ +(-1) '"' @;
+      if not missing(&&_vname&i) then do;
+          temp=tranwrd(vvalue(&&_vname&i) ,'"','\"');
+          put '"' temp~ +(-1) '"' @;
+      end;
       else put '""' @;
       put "," @;
     %end;

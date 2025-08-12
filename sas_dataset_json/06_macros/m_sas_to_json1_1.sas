@@ -106,10 +106,12 @@ Required SAS 9.4 and above
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-22]
   Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
-  past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
-  Last update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
+  Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Last update Date   : [2025-08-13] --  
+    When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
 
-  Version        : 0.13
+  Version        : 0.20
   License        : MIT License
 
 *//*** HELP END ***/
@@ -180,7 +182,7 @@ call symputx("creationDateTime",put(datetime(),e8601dt.));
 run;
 
 /*Obtaining the number of observations*/
-proc sql  ;
+proc sql  noprint;
  select count(*) into: tot_obs
  from &library..&dataset
 ;
@@ -215,7 +217,7 @@ length keySequence 8. ;
 set sashelp.vcolumn(rename=(name=_name label=_label length=_length));
 where libname = upcase("&library.");
 where same memname = upcase("&dataset.");
-  call missing(of displayFormat);
+  call missing(of targetDataType displayFormat);
   itemOID = cats("IT.","&dataset..",_name);
   name = _name;  
   label=_label;
@@ -228,6 +230,7 @@ where same memname = upcase("&dataset.");
  if index(upcase(displayFormat),"TIME") > 0
     | index(upcase(displayFormat),"TOD") > 0
     | index(upcase(displayFormat),"HOUR") > 0
+    | index(upcase(displayFormat),"8601TM") > 0
     then do;
     dataType = "time";
     targetDataType ="integer";
