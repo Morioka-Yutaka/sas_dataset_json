@@ -9,36 +9,29 @@
 ### Version information:
   
 - Package: sas_dataset_json
-- Version: 0.1.3
-- Generated: 2025-06-23T07:17:41
+- Version: 0.2.0
+- Generated: 2025-08-13T03:22:34
 - Author(s): Yutaka Morioka(sasyupi@gmail.com)
 - Maintainer(s): Yutaka Morioka(sasyupi@gmail.com)
 - License: MIT
-- File SHA256: `F*8812C153FFE4263B4069924E458B6E9284086AB652F2C6AD3AAC4B50CB38F218` for this version
-- Content SHA256: `C*BB1FB73A11322124918C63E2EC71899EEBFF3CFEE966C051EA80C907BDFF087B` for this version
+- File SHA256: `F*F622A6309D74808B6FDD403667A67F74055DD7A6944EEC6420083D0C8B389A82` for this version
+- Content SHA256: `C*0E4E65ED5864D4F23FFEBD8A4C5223F7771982538FDD5122AFD721390053BF94` for this version
   
 ---
  
-# The `sas_dataset_json` package, version: `0.1.3`;
+# The `sas_dataset_json` package, version: `0.2.0`;
   
 ---
  
-sas_dataset_json is a SAS macro package designed to support bi-directional conversion between CDISC-compliant dataset-JSON format and SAS datasets. 
+sas_dataset_json is a SAS macro package designed to support bi-directional conversion between CDISC-compliant dataset-JSON format and SAS datasets.
 Key Features:
-
 Export SAS datasets to dataset-JSON
-
 Automatically extracts metadata such as labels, data types, lengths, and formats
-
 Supports SAS Extended Attributes to override default metadata values
 (e.g., dataType, displayFormat, label, targetDataType, etc.)
-
 Outputs in strict compliance with dataset-JSON v1.1
-
 Import dataset-JSON into SAS datasets
-
 Parses metadata and records from JSON to reconstruct SAS datasets
-
   
 ---
  
@@ -128,9 +121,12 @@ Macro Name    : %m_json1_1_to_sas
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-23]
-  Last update Date   : [2025-06-23] -- initialize keySequence (0.13)
+  Past update Date   : [2025-06-23] -- initialize keySequence (0.13)
+  Last update Date   : [2025-08-13] --  
+   Setting the length of the dataset from dataset-json when the type is string.
+   Bug fix for when the variable label in dataset-json is null  (0.20)
 
-  Version        : 0.13
+  Version        : 0.20
   License        : MIT License
 
   
@@ -178,7 +174,10 @@ Macro Name    : %m_ndjson1_1_to_sas
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-06-23]
-  Version        : 0.13 (first)
+  Last update Date   : [2025-08-13] --  
+   Setting the length of the dataset from dataset-json when the type is string.
+   Bug fix for when the variable label in dataset-json is null  (0.20)
+  Version        : 0.20
   License        : MIT License
 
   
@@ -292,10 +291,12 @@ Required SAS 9.4 and above
   Author         : [Yutaka Morioka]
   Created Date   : [2025-05-22]
   Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
-  past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
-  Last update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
+  Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Last update Date   : [2025-08-13] --  
+    When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
 
-  Version        : 0.13
+  Version        : 0.20
   License        : MIT License
 
   
@@ -404,7 +405,10 @@ Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-06-23]
-  Version        : 0.13 (first)
+  Last update Date   : [2025-08-13] --  
+    When the E8601DT format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  
+    Added escape processing when double quotation marks are included in data.
+  Version        : 0.20 
   License        : MIT License
 
   
@@ -415,25 +419,22 @@ Required SAS 9.4 and above
  
 # License <a name="license"></a> ######
  
-	Copyright (c) [2025] [Yutaka Morioka]
-
-  Permission is hereby granted, free of charge, to any person obtaining a copy  
-  of this software and associated documentation files (the "Software"), to deal  
-  in the Software without restriction, including without limitation the rights  
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     
-  copies of the Software, and to permit persons to whom the Software is         
-  furnished to do so, subject to the following conditions:                      
-                                                                                
-  The above copyright notice and this permission notice shall be included       
-  in all copies or substantial portions of the Software.                        
-                                                                                
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
-  SOFTWARE.
+Copyright (c) [2025] [Yutaka Morioka]
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
   
 ---
  
