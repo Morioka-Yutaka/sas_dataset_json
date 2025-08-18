@@ -1,7 +1,7 @@
 # sas_dataset_json
 sas_dataset_json is a SAS macro package designed to support bi-directional conversion between CDISC-compliant Dataset-JSON format and SAS datasets.<br>
 
-<img width="180" height="180" alt="Image" src="https://github.com/user-attachments/assets/bec6e378-f0f8-4421-bb72-78176eb7794c" />  
+<img width="350" height="350" alt="Image" src="https://github.com/user-attachments/assets/bec6e378-f0f8-4421-bb72-78176eb7794c" />  
 
 # 日本ユーーザ向け，日本語説明資料
  https://www.docswell.com/s/6484025/5WW7G4-2025-05-26-023206
