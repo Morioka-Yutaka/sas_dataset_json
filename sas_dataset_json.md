@@ -9,17 +9,17 @@
 ### Version information:
   
 - Package: sas_dataset_json
-- Version: 0.2.0
-- Generated: 2025-08-13T03:22:34
+- Version: 0.2.1
+- Generated: 2025-08-24T22:53:15
 - Author(s): Yutaka Morioka(sasyupi@gmail.com)
 - Maintainer(s): Yutaka Morioka(sasyupi@gmail.com)
 - License: MIT
-- File SHA256: `F*F622A6309D74808B6FDD403667A67F74055DD7A6944EEC6420083D0C8B389A82` for this version
-- Content SHA256: `C*0E4E65ED5864D4F23FFEBD8A4C5223F7771982538FDD5122AFD721390053BF94` for this version
+- File SHA256: `F*9C0633084AA0D14573FE39630F8AE9EFED726000277C9608530F1C3AC438A233` for this version
+- Content SHA256: `C*EC04C023E10A0A237A34C9D3CDD7E1B7B025EDA72F31244FDF3FAA8346534AA0` for this version
   
 ---
  
-# The `sas_dataset_json` package, version: `0.2.0`;
+# The `sas_dataset_json` package, version: `0.2.1`;
   
 ---
  
@@ -293,10 +293,11 @@ Required SAS 9.4 and above
   Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
   Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
   Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
-  Last update Date   : [2025-08-13] --  
+  Pat\st update Date   : [2025-08-13] --  
     When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
-
-  Version        : 0.20
+  Last update Date   : [2025-08-24] --  
+    Add processing when formats other than ISO8601 are used for dates, dates and times, and times
+  Version        : 0.21
   License        : MIT License
 
   
@@ -304,13 +305,13 @@ Required SAS 9.4 and above
  
 ## `%m_sas_to_ndjson1_1()` macro <a name="msastondjson11-macros-6"></a> ######
 
-Macro Name    : %m_sas_to_ndjson1_1
-  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
+Macro Name    : %m_sas_to_json1_1
+  Description   : Exports a SAS dataset to Dataset-JSON 
                   format (version 1.1). This macro is designed to
                   support clinical data interchange by generating
 
   Purpose       : 
-    - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
+    - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.
     - Generates a metadata-rich datasetJSON with customizable elements.
@@ -319,6 +320,7 @@ Macro Name    : %m_sas_to_ndjson1_1
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
     dataset               : Name of the input dataset (required).
+    pretty                : Whether to pretty-print the JSON (Y/N, default: Y).
     originator            : Organization or system creating the file (optional).
     fileOID               : File OID to uniquely identify the JSON (optional).
     studyOID              : Study OID used in the Define-XML reference (optional).
@@ -329,7 +331,7 @@ Macro Name    : %m_sas_to_ndjson1_1
   Features:
     - Automatically detects and prioritizes extended attributes for variables.
     - Captures dataset-level metadata such as label and last modified date.
-    - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
+    - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.
 
   Dependencies:
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
@@ -339,21 +341,23 @@ Macro Name    : %m_sas_to_ndjson1_1
     - Extended variable attributes (label, type, format, etc.) override defaults.
     - All variables are output with detailed metadata including data types,
       display formats, and lengths.
-    - Output file is saved as "&outpath.\&dataset..ndjson".
+    - Output file is saved as "&outpath.\&dataset..json".
 
   Example Usage:
 
 - [case 1] default, simple use
-%m_sas_to_ndjson1_1(outpath =/project/json_out,
+%m_sas_to_json1_1(outpath =/project/json_out,
                  library = adam,
                  dataset = adsl,
+                 pretty = Y
 );
 
 - [case 2] setting dataset-level metadata
-    %m_sas_to_ndjson1_1(
+    %m_sas_to_json1_1(
       outpath=/project/json_out,
       library=SDTM,
       dataset=AE,
+      pretty=Y,
       originator=ABC Pharma,
       fileOID=http://example.org/studyXYZ/define,
       studyOID=XYZ-123,
@@ -396,19 +400,24 @@ proc datasets nolist;
 ; 
 run;
 quit;
- %m_sas_to_ndjson1_1(outpath = /project/json_out,
+ %m_sas_to_json1_1(outpath = /project/json_out,
                  library = WORK,
                  dataset = adsl,
+                 pretty = Y
 );
 
 Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
-  Created Date   : [2025-06-23]
-  Last update Date   : [2025-08-13] --  
-    When the E8601DT format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  
-    Added escape processing when double quotation marks are included in data.
-  Version        : 0.20 
+  Created Date   : [2025-05-22]
+  Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
+  Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
+  Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Pat\st update Date   : [2025-08-13] --  
+    When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
+  Last update Date   : [2025-08-24] --  
+    Add processing when formats other than ISO8601 are used for dates, dates and times, and times
+  Version        : 0.21
   License        : MIT License
 
   
