@@ -108,10 +108,11 @@ Required SAS 9.4 and above
   Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
   Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
   Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
-  Last update Date   : [2025-08-13] --  
+  Pat\st update Date   : [2025-08-13] --  
     When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
-
-  Version        : 0.20
+  Last update Date   : [2025-08-24] --  
+    Add processing when formats other than ISO8601 are used for dates, dates and times, and times
+  Version        : 0.21
   License        : MIT License
 
 *//*** HELP END ***/
@@ -230,6 +231,7 @@ where same memname = upcase("&dataset.");
  if index(upcase(displayFormat),"TIME") > 0
     | index(upcase(displayFormat),"TOD") > 0
     | index(upcase(displayFormat),"HOUR") > 0
+    | index(upcase(displayFormat),"TIMEAMPM") > 0
     | index(upcase(displayFormat),"8601TM") > 0
     then do;
     dataType = "time";
@@ -251,11 +253,45 @@ where same memname = upcase("&dataset.");
     dataType = "datetime";
     targetDataType ="integer";
   end;
-
-
-
   keep Num itemOID name label dataType targetDataType  length displayFormat length keySequence ;
 run;
+
+
+/*Processing when formats other than ISO8601 are used for dates, dates and times, and times*/
+%let change_flag=N;
+
+data format_change;
+ set columns_1 end=eof;
+ where 
+  (dataType = "date" and upcase(displayFormat) ne "E8601DA")
+  |
+  (dataType = "time" and upcase(displayFormat) ne "E8601TM")
+  |
+  (dataType = "datetime" and upcase(displayFormat) ne "E8601DT")
+;
+if dataType = "date" then change_text = catx(" ", name,"format=E8601DA.");
+if dataType = "time" then  change_text = catx(" ", name,"format=E8601TM.");
+if dataType = "datetime" then  change_text = catx(" ", name,"format=E8601DT.");
+if eof then call symputx("change_flag","Y");
+run;
+proc sql noprint;
+ select change_text into:change_text separated by ","
+ from format_change;
+quit;
+%put &=change_flag;
+%if &change_flag=Y %then %do;
+data __&dataset.;
+set &library..&dataset.; 
+run;
+
+proc sql;
+  alter table __&dataset
+  modify
+    &change_text.
+    ;
+quit;
+
+%end;
 
 proc sort data=columns_1;
  by name;
@@ -340,7 +376,12 @@ write close;
 
  write values "rows" ;/* record array */
  write open array;
+    %if &change_flag ne Y %then %do;
       export &library..&dataset. / nokeys fmtdatetime nosastags;
+    %end;
+    %if &change_flag eq Y %then %do;
+      export __&dataset. / nokeys fmtdatetime nosastags;
+    %end;
   write close;
 write close;
 run ;

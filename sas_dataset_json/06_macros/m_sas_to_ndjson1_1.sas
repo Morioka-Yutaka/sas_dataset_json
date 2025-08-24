@@ -1,12 +1,12 @@
 /*** HELP START ***//*
 
-Macro Name    : %m_sas_to_ndjson1_1
-  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
+Macro Name    : %m_sas_to_json1_1
+  Description   : Exports a SAS dataset to Dataset-JSON 
                   format (version 1.1). This macro is designed to
                   support clinical data interchange by generating
 
   Purpose       : 
-    - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
+    - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.
     - Generates a metadata-rich datasetJSON with customizable elements.
@@ -15,6 +15,7 @@ Macro Name    : %m_sas_to_ndjson1_1
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
     dataset               : Name of the input dataset (required).
+    pretty                : Whether to pretty-print the JSON (Y/N, default: Y).
     originator            : Organization or system creating the file (optional).
     fileOID               : File OID to uniquely identify the JSON (optional).
     studyOID              : Study OID used in the Define-XML reference (optional).
@@ -25,7 +26,7 @@ Macro Name    : %m_sas_to_ndjson1_1
   Features:
     - Automatically detects and prioritizes extended attributes for variables.
     - Captures dataset-level metadata such as label and last modified date.
-    - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
+    - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.
 
   Dependencies:
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
@@ -35,21 +36,23 @@ Macro Name    : %m_sas_to_ndjson1_1
     - Extended variable attributes (label, type, format, etc.) override defaults.
     - All variables are output with detailed metadata including data types,
       display formats, and lengths.
-    - Output file is saved as "&outpath.\&dataset..ndjson".
+    - Output file is saved as "&outpath.\&dataset..json".
 
   Example Usage:
 
 - [case 1] default, simple use
-%m_sas_to_ndjson1_1(outpath =/project/json_out,
+%m_sas_to_json1_1(outpath =/project/json_out,
                  library = adam,
                  dataset = adsl,
+                 pretty = Y
 );
 
 - [case 2] setting dataset-level metadata
-    %m_sas_to_ndjson1_1(
+    %m_sas_to_json1_1(
       outpath=/project/json_out,
       library=SDTM,
       dataset=AE,
+      pretty=Y,
       originator=ABC Pharma,
       fileOID=http://example.org/studyXYZ/define,
       studyOID=XYZ-123,
@@ -92,19 +95,24 @@ proc datasets nolist;
 ; 
 run;
 quit;
- %m_sas_to_ndjson1_1(outpath = /project/json_out,
+ %m_sas_to_json1_1(outpath = /project/json_out,
                  library = WORK,
                  dataset = adsl,
+                 pretty = Y
 );
 
 Required SAS 9.4 and above
 
   Author         : [Yutaka Morioka]
-  Created Date   : [2025-06-23]
-  Last update Date   : [2025-08-13] --  
-    When the E8601DT format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  
-    Added escape processing when double quotation marks are included in data.
-  Version        : 0.20 
+  Created Date   : [2025-05-22]
+  Past update Date   : [2025-05-23] -- delete ITEMGROUPDATASEQ 
+  Past update Date   : [2025-05-25] -- modified to not output data attributes with empty definitions.
+  Past update Date   : [2025-06-23] -- apply the e8601DT format to the LastModifiedDateTime
+  Pat\st update Date   : [2025-08-13] --  
+    When the E8601TM format is applied, set dataType = "date" and targetDataType = "integer". However, specifications in extended attributes take precedence.  (0.20)
+  Last update Date   : [2025-08-24] --  
+    Add processing when formats other than ISO8601 are used for dates, dates and times, and times
+  Version        : 0.21
   License        : MIT License
 
 *//*** HELP END ***/
@@ -246,6 +254,42 @@ where same memname = upcase("&dataset.");
   keep Num itemOID name label dataType targetDataType  length displayFormat length keySequence ;
 run;
 
+/*Processing when formats other than ISO8601 are used for dates, dates and times, and times*/
+%let change_flag=N;
+
+data format_change;
+ set columns_1 end=eof;
+ where 
+  (dataType = "date" and upcase(displayFormat) ne "E8601DA")
+  |
+  (dataType = "time" and upcase(displayFormat) ne "E8601TM")
+  |
+  (dataType = "datetime" and upcase(displayFormat) ne "E8601DT")
+;
+if dataType = "date" then change_text = catx(" ", name,"format=E8601DA.");
+if dataType = "time" then  change_text = catx(" ", name,"format=E8601TM.");
+if dataType = "datetime" then  change_text = catx(" ", name,"format=E8601DT.");
+if eof then call symputx("change_flag","Y");
+run;
+proc sql noprint;
+ select change_text into:change_text separated by ","
+ from format_change;
+quit;
+%put &=change_flag;
+%if &change_flag=Y %then %do;
+data __&dataset.;
+set &library..&dataset.; 
+run;
+
+proc sql;
+  alter table __&dataset
+  modify
+    &change_text.
+    ;
+quit;
+
+%end;
+
 proc sort data=columns_1;
  by name;
 run;
@@ -343,7 +387,12 @@ run;
 filename outndj "&outpath.\&L_dataset..ndjson";
 data _null_;
 length temp $32767.;
-  set &library..&dataset. ;
+    %if &change_flag ne Y %then %do;
+      set &library..&dataset. ;
+    %end;
+    %if &change_flag eq Y %then %do;
+      set __&dataset. ;
+    %end;
   call missing(temp);
   file outndj mod;
   if _N_=1 then put;
