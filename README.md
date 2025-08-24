@@ -294,7 +294,7 @@ quit;
     %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
 # version history<br>
-0.2.1(24Auguat2025):Fixed a bug in m_sas_to_json1_1 and m_sas_to_ndjson1_1 where reconversion (sas → json → sas) failed if non-ISO formats were used for numeric date, datetime, or time values.  　
+0.2.1(24Auguat2025):Fixed a bug in m_sas_to_json1_1 and m_sas_to_ndjson1_1 where reconversion (sas → json → sas) failed if non-ISO formats were used for numeric date, datetime, or time values.  <br>
 0.2.0(13Auguat2025):Bug Fix.  
 0.1.3(23Jun2025): Support NDJSON, add %m_sas_to_ndjson1_1 and %m_ndjson1_1_to_sas
 		  %m_sas_to_json1_1--Apply the e8601DT format to the LastModifiedDateTime.<br>
