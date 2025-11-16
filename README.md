@@ -10,8 +10,7 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
 
 ## %m_sas_to_json1_1
  ### Description   : <br>  
-  		　Exports a SAS dataset to Dataset-JSON 
-                  format (version 1.1). <br>
+Exports a SAS dataset to Dataset-JSON format (version 1.1). <br>
 
  ### Purpose       : <br>
     - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .<br>
