@@ -32,19 +32,18 @@ Exports a SAS dataset to Dataset-JSON format (version 1.1). <br>
     sourceSystem_version  : Source system version (default: from &SYSVLONG).
 ~~~
  ### Features:<br>
-    - Automatically detects and prioritizes extended attributes for variables.<br>
-    - Captures dataset-level metadata such as label and last modified date.<br>
-    - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.<br>
+- Automatically detects and prioritizes extended attributes for variables.<br>
+- Captures dataset-level metadata such as label and last modified date.<br>
+- Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.<br>
 
  ### Dependencies:<br>
-    - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.<br>
-    - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.<br>
+- Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.<br>
+- Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.<br>
 
  ### Notes:<br>
-    - Extended variable attributes (label, type, format, etc.) override defaults.<br>
-    - All variables are output with detailed metadata including data types,<br>
-      display formats, and lengths.<br>
-    - Output file is saved as "&outpath.\&dataset..json".<br>
+- Extended variable attributes (label, type, format, etc.) override defaults.<br>
+- All variables are output with detailed metadata including data types, display formats, and lengths.<br>
+- Output file is saved as "&outpath.\&dataset..json".<br>
 
  ## Example Usage:<br>
 ### - [case 1] default, simple use<br>
@@ -111,28 +110,27 @@ quit;
 ~~~
 
 
-# %m_json1_1_to_sas
-## Description   : <br>
- 		Imports CDISC-compliant dataset-JSON v1.1 into a 
-                   SAS dataset, reconstructing structure and metadata including extended attributes.<br>
+## %m_json1_1_to_sas
+### Description   : <br>
+Imports CDISC-compliant dataset-JSON v1.1 into a SAS dataset, reconstructing structure and metadata including extended attributes.<br>
 
-##  Key Features:<br>
-    - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine<br>
-    - Extracts "root", "columns", and "rows" objects from JSON<br>
-    - Dynamically generates:<br>
-        - LABEL, FORMAT, and RENAME statements<br>
-        - INPUT conversion logic for ISO8601 date/datetime types<br>
-    - Automatically applies:<br>
-        - Dataset-level metadata via PROC DATASETS and XATTR<br>
-        - Variable-level extended attributes such as:<br>
-            - dataType<br>
-            - targetDataType<br>
-            - displayFormat<br>
-            - keySequence<br>
-            - length<br>
+###  Key Features:<br>
+- Reads dataset-JSON using the FILENAME and JSON LIBNAME engine<br>
+- Extracts "root", "columns", and "rows" objects from JSON<br>
+- Dynamically generates:<br>
+   - LABEL, FORMAT, and RENAME statements<br>
+   - INPUT conversion logic for ISO8601 date/datetime types<br>
+   - Automatically applies:<br>
+    - Dataset-level metadata via PROC DATASETS and XATTR<br>
+    - Variable-level extended attributes such as:<br>
+    - dataType<br>
+    - targetDataType<br>
+    - displayFormat<br>
+    - keySequence<br>
+    - length<br>
     - Provides warnings for unsupported data types (e.g., decimal)<br>
 
- ## Parameters:<br>
+ ### Parameters:<br>
 ~~~text 
     inpath : Path to the folder containing the dataset-JSON file
     ds     : SAS dataset name to create (derived from the file name)
@@ -147,23 +145,21 @@ quit;
     - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
-##  Example Usage:
+###  Example Usage:
 ~~~sas  
     %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
 
-# %m_sas_to_ndjson1_1
-##  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
-                  format (version 1.1). This macro is designed to
-                  support clinical data interchange by generating
+## %m_sas_to_ndjson1_1
+###  Description   :  
+Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) format (version 1.1). This macro is designed to support clinical data interchange by generating
 
-##  Purpose       : 
-    - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
-    - Automatically extracts metadata such as labels, data types, formats,
-      and extended attributes if defined.
-    - Generates a metadata-rich datasetJSON with customizable elements.
+###  Purpose       : 
+- To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
+- Automatically extracts metadata such as labels, data types, formats, and extended attributes if defined.
+- Generates a metadata-rich datasetJSON with customizable elements.
 
- ## Parameters:
+### Parameters:
  ~~~text 
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
@@ -176,16 +172,16 @@ quit;
     sourceSystem_version  : Source system version (default: from &SYSVLONG).]]
 ~~~
 
- ## Features:
-    - Automatically detects and prioritizes extended attributes for variables.
-    - Captures dataset-level metadata such as label and last modified date.
-    - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
+### Features:
+- Automatically detects and prioritizes extended attributes for variables.  
+- Captures dataset-level metadata such as label and last modified date.  
+- Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.  
 
- ## Dependencies:
-    - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
-    - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.
+### Dependencies:  
+- Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.  
+- Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.  
 
- ## Notes:
+### Notes:  
     - Extended variable attributes (label, type, format, etc.) override defaults.
     - All variables are output with detailed metadata including data types,
       display formats, and lengths.
