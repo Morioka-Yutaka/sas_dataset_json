@@ -13,14 +13,14 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
   		　Exports a SAS dataset to Dataset-JSON 
                   format (version 1.1). <br>
 
-  Purpose       : <br>
+ ## Purpose       : <br>
     - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .<br>
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.<br>
     - Generates a metadata-rich datasetJSON with customizable elements.<br>
 
 
-  Parameters:<br>
+ ## Parameters:<br>
 ~~~text  
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
@@ -33,23 +33,23 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
     sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).
     sourceSystem_version  : Source system version (default: from &SYSVLONG).
 ~~~
-  Features:<br>
+ ## Features:<br>
     - Automatically detects and prioritizes extended attributes for variables.<br>
     - Captures dataset-level metadata such as label and last modified date.<br>
     - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.<br>
 
-  Dependencies:<br>
+ ## Dependencies:<br>
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.<br>
     - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.<br>
 
-  Notes:<br>
+ ## Notes:<br>
     - Extended variable attributes (label, type, format, etc.) override defaults.<br>
     - All variables are output with detailed metadata including data types,<br>
       display formats, and lengths.<br>
     - Output file is saved as "&outpath.\&dataset..json".<br>
 
-  Example Usage:<br>
-- [case 1] default, simple use<br>
+ ## Example Usage:<br>
+### - [case 1] default, simple use<br>
 ~~~sas  
 %m_sas_to_json1_1(outpath =/project/json_out,
                  library = adam,
@@ -58,7 +58,7 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
 ~~~
 <br>
 
-- [case 2] setting dataset-level metadata<br>
+### - [case 2] setting dataset-level metadata<br>
 ~~~sas  
     %m_sas_to_json1_1(
       outpath=/project/json_out,
@@ -74,7 +74,7 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
     );
 ~~~
 
-- [case 3] set metadata by SAS extended attribute<br>
+### - [case 3] set metadata by SAS extended attribute<br>
 ~~~sas  
 proc datasets nolist;                             
    modify adsl;     
@@ -114,11 +114,11 @@ quit;
 
 
 # %m_json1_1_to_sas
- Description   : <br>
+## Description   : <br>
  		Imports CDISC-compliant dataset-JSON v1.1 into a 
                    SAS dataset, reconstructing structure and metadata including extended attributes.<br>
 
-  Key Features:<br>
+##  Key Features:<br>
     - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine<br>
     - Extracts "root", "columns", and "rows" objects from JSON<br>
     - Dynamically generates:<br>
@@ -134,7 +134,7 @@ quit;
             - length<br>
     - Provides warnings for unsupported data types (e.g., decimal)<br>
 
-  Parameters:<br>
+ ## Parameters:<br>
 ~~~text 
     inpath : Path to the folder containing the dataset-JSON file
     ds     : SAS dataset name to create (derived from the file name)
@@ -149,23 +149,23 @@ quit;
     - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
-  Example Usage:
+##  Example Usage:
 ~~~sas  
     %m_json1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
 
 # %m_sas_to_ndjson1_1
-  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
+##  Description   : Exports a SAS dataset to NDJSON (Representation of Dataset-JSON) 
                   format (version 1.1). This macro is designed to
                   support clinical data interchange by generating
 
-  Purpose       : 
+##  Purpose       : 
     - To convert a SAS dataset into a structured NDJSON format(subset of Dataset-JSON version 1.1) .
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.
     - Generates a metadata-rich datasetJSON with customizable elements.
 
-  Parameters:
+ ## Parameters:
  ~~~text 
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
@@ -178,24 +178,24 @@ quit;
     sourceSystem_version  : Source system version (default: from &SYSVLONG).]]
 ~~~
 
-  Features:
+ ## Features:
     - Automatically detects and prioritizes extended attributes for variables.
     - Captures dataset-level metadata such as label and last modified date.
     - Outputs structured "columns" and rows part sections per dataset-JSON v1.1.0.
 
-  Dependencies:
+ ## Dependencies:
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.
     - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.
 
-  Notes:
+ ## Notes:
     - Extended variable attributes (label, type, format, etc.) override defaults.
     - All variables are output with detailed metadata including data types,
       display formats, and lengths.
     - Output file is saved as "&outpath.\&dataset..ndjson".
 
-  Example Usage:
+ ## Example Usage:
 
-- [case 1] default, simple use
+### - [case 1] default, simple use
 ~~~sas  
 %m_sas_to_ndjson1_1(outpath =/project/json_out,
                  library = adam,
@@ -203,7 +203,7 @@ quit;
 );
 ~~~
 
-- [case 2] setting dataset-level metadata
+### - [case 2] setting dataset-level metadata
 ~~~sas  
     %m_sas_to_ndjson1_1(
       outpath=/project/json_out,
@@ -218,7 +218,7 @@ quit;
     );
 ~~~
 
-- [case 3] set metadata by SAS extended attribute
+### - [case 3] set metadata by SAS extended attribute
 ~~~sas  
 proc datasets nolist;                             
    modify adsl;     
@@ -256,10 +256,10 @@ quit;
 ~~~
 
 # %m_ndjson1_1_to_sas
-  Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
+ ## Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
                    SAS dataset, reconstructing structure and metadata including extended attributes.
 
-  Key Features:
+ ## Key Features:
 	- Convert ndjson to dataset-json once internally
     - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
     - Extracts "root", "columns", and "rows" objects from JSON
@@ -276,7 +276,7 @@ quit;
             - length
     - Provides warnings for unsupported data types (e.g., decimal)
 
-  Parameters:
+ ## Parameters:
 ~~~text 
     inpath : Path to the folder containing the dataset-JSON file
     ds     : SAS dataset name to create (derived from the file name)
@@ -291,7 +291,7 @@ quit;
     - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
     - Extended metadata attributes are added using PROC DATASETS/XATTR
 
-  Example Usage:
+ ## Example Usage:
   ~~~sas  
     %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
