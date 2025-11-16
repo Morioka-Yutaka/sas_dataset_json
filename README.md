@@ -9,18 +9,18 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
  https://www.docswell.com/s/6484025/5WW7G4-2025-05-26-023206
 
 # %m_sas_to_json1_1
-  Description   : <br>
+ ### Description   : <br>
   		　Exports a SAS dataset to Dataset-JSON 
                   format (version 1.1). <br>
 
- ## Purpose       : <br>
+ ### Purpose       : <br>
     - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .<br>
     - Automatically extracts metadata such as labels, data types, formats,
       and extended attributes if defined.<br>
     - Generates a metadata-rich datasetJSON with customizable elements.<br>
 
 
- ## Parameters:<br>
+ ### Parameters:<br>
 ~~~text  
     outpath               : Path to output directory (default: WORK directory).
     library               : Library reference for input dataset (default: WORK).
@@ -33,16 +33,16 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
     sourceSystem_name     : Source system name (default: SAS on &SYSSCPL.).
     sourceSystem_version  : Source system version (default: from &SYSVLONG).
 ~~~
- ## Features:<br>
+ ### Features:<br>
     - Automatically detects and prioritizes extended attributes for variables.<br>
     - Captures dataset-level metadata such as label and last modified date.<br>
     - Outputs structured "columns" and "rows" sections per dataset-JSON v1.1.0.<br>
 
- ## Dependencies:<br>
+ ### Dependencies:<br>
     - Requires access to `sashelp.vxattr`, `sashelp.vcolumn`, and `sashelp.vtable`.<br>
     - Uses PROC JSON, PROC SQL, PROC CONTENTS, and extended attribute inspection.<br>
 
- ## Notes:<br>
+ ### Notes:<br>
     - Extended variable attributes (label, type, format, etc.) override defaults.<br>
     - All variables are output with detailed metadata including data types,<br>
       display formats, and lengths.<br>
