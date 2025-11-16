@@ -249,46 +249,47 @@ quit;
                  dataset = adsl);
 ~~~
 
-# %m_ndjson1_1_to_sas
- ## Description   : Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a 
-                   SAS dataset, reconstructing structure and metadata including extended attributes.
+## %m_ndjson1_1_to_sas
+### Description   :
+Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 1.1) into a SAS dataset, reconstructing structure and metadata including extended attributes.
 
- ## Key Features:
-	- Convert ndjson to dataset-json once internally
-    - Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
-    - Extracts "root", "columns", and "rows" objects from JSON
-    - Dynamically generates:
-        - LABEL, FORMAT, and RENAME statements
-        - INPUT conversion logic for ISO8601 date/datetime types
-    - Automatically applies:
-        - Dataset-level metadata via PROC DATASETS and XATTR
-        - Variable-level extended attributes such as:
-            - dataType
-            - targetDataType
-            - displayFormat
-            - keySequence
-            - length
-    - Provides warnings for unsupported data types (e.g., decimal)
+### Key Features:  
+- Convert ndjson to dataset-json once internally
+- Reads dataset-JSON using the FILENAME and JSON LIBNAME engine
+- Extracts "root", "columns", and "rows" objects from JSON
+- Dynamically generates:
+- LABEL, FORMAT, and RENAME statements
+- INPUT conversion logic for ISO8601 date/datetime types
+- Automatically applies:
+- Dataset-level metadata via PROC DATASETS and XATTR
+- Variable-level extended attributes such as:
+ - dataType
+ - targetDataType
+ - displayFormat
+ - keySequence
+ - length
+- Provides warnings for unsupported data types (e.g., decimal)
 
- ## Parameters:
+### Parameters:
 ~~~text 
     inpath : Path to the folder containing the dataset-JSON file
     ds     : SAS dataset name to create (derived from the file name)
 ~~~
-  Requirements:
-    - SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)
-    - Input JSON must follow the dataset-JSON v1.1 specification
+### Requirements:
+- SAS 9.4M5 or later (for JSON LIBNAME engine and extended attributes)
+- Input JSON must follow the dataset-JSON v1.1 specification
 
-  Notes:
-    - "decimal" targetDataType is not natively supported in SAS;
-      values are read as numeric using the `best.` format with a warning
-    - Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
-    - Extended metadata attributes are added using PROC DATASETS/XATTR
+### Notes:
+- "decimal" targetDataType is not natively supported in SAS;
+ - values are read as numeric using the `best.` format with a warning
+- Date and datetime values are parsed using `E8601DA.` and `E8601DT.` formats
+- Extended metadata attributes are added using PROC DATASETS/XATTR
 
- ## Example Usage:
-  ~~~sas  
+### Example Usage:
+~~~sas  
     %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
+
 # version history<br>
 0.2.1(24Auguat2025):Fixed a bug in m_sas_to_json1_1 and m_sas_to_ndjson1_1 where reconversion (sas → json → sas) failed if non-ISO formats were used for numeric date, datetime, or time values.  <br>
 0.2.0(13Auguat2025):Bug Fix.  
