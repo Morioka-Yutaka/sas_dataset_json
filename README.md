@@ -13,10 +13,9 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
 Exports a SAS dataset to Dataset-JSON format (version 1.1). <br>
 
  ### Purpose       : <br>
-    - To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .<br>
-    - Automatically extracts metadata such as labels, data types, formats,
-      and extended attributes if defined.<br>
-    - Generates a metadata-rich datasetJSON with customizable elements.<br>
+- To convert a SAS dataset into a structured Dataset-JSON format(version 1.1) .<br>
+- Automatically extracts metadata such as labels, data types, formats,and extended attributes if defined.<br>
+- Generates a metadata-rich datasetJSON with customizable elements.<br>
 
 
  ### Parameters:<br>
