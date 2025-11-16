@@ -128,7 +128,7 @@ Imports CDISC-compliant dataset-JSON v1.1 into a SAS dataset, reconstructing str
     - displayFormat<br>
     - keySequence<br>
     - length<br>
-    - Provides warnings for unsupported data types (e.g., decimal)<br>
+- Provides warnings for unsupported data types (e.g., decimal)<br>
 
  ### Parameters:<br>
 ~~~text 
@@ -263,11 +263,11 @@ Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 
 - Automatically applies:
 - Dataset-level metadata via PROC DATASETS and XATTR
 - Variable-level extended attributes such as:
- - dataType
- - targetDataType
- - displayFormat
- - keySequence
- - length
+  - dataType
+  - targetDataType
+  - displayFormat
+  - keySequence
+  - length
 - Provides warnings for unsupported data types (e.g., decimal)
 
 ### Parameters:
