@@ -5,7 +5,7 @@ Developed with clinical data interchange and regulatory-ready workflows in mind,
 
 <img width="300" height="300" alt="Image" src="https://github.com/user-attachments/assets/bec6e378-f0f8-4421-bb72-78176eb7794c" />  
 
-# 日本ユーーザ向け，日本語説明資料
+# 日本ユーザー向け，日本語説明資料
  https://www.docswell.com/s/6484025/5WW7G4-2025-05-26-023206
 
 ## %m_sas_to_json1_1
