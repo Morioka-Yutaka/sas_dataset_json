@@ -1,0 +1,7 @@
+{
+  "bundle": "t001_json_dataType_classification",
+  "source_file": "sas_dataset_json/06_macros/m_sas_to_json1_1.sas",
+  "source_blob_sha": "647cde81ae6ee07b9b1471843d4e4d1b5b77ce46",
+  "source_commit": "af071422925b4048f338f03cdab1cbba8925a5a1",
+  "notes": "Exercises the 'Setting variable definitions' DATA step inside %m_sas_to_json1_1 -- the block that classifies each SAS variable's dataType/targetDataType for CDISC Dataset-JSON v1.1 export from its SAS display format (E8601DA./E8601DT./TOD/etc). The IF/INDEX/UPCASE classification logic is copied unchanged; the input is a mock SASHELP.VCOLUMN-shaped dataset (5 rows: 2 character, 1 plain numeric, 1 date-formatted, 1 datetime-formatted) built in autoexec.sas instead of reading the real dictionary view, and two working variables are renamed (length->_len, format read via a SET rename= rather than a same-named LENGTH-statement/bare-assignment collision) to work around Jenner parser gaps found while building this bundle (jenner-language regression tests 403892, 403910). The full macro's public entry point (%m_sas_to_json1_1 end-to-end, including its SASHELP.VCOLUMN dictionary-view read and CALL EXECUTE-driven column export) was also tried but found to be intermittently nondeterministic in Jenner during self-check (some runs fail with 'Dataset not found: .../r1_columns.avro' or a downstream unresolved macro variable) and could not be reliably reproduced across POSTs, so it was not shipped; this narrower bundle exercises the same real classification logic against real (mock) input reliably."
+}

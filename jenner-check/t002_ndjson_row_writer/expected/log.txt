@@ -1,0 +1,26 @@
+NOTE: Option OBS changed to 100.
+NOTE: DATA adsl
+
+
+NOTE: Wrote adsl (2 rows, 4 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
+NOTE: Fileref OUTNDJ assigned to /tmp/work/r_06b44a9311b940208deebe90740a910e/work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson.
+NOTE: DATA _null_
+
+NOTE: Writing to fileref outndj (/tmp/work/r_06b44a9311b940208deebe90740a910e/work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson)
+NOTE: DATA _null_ completed. Output written to fileref outndj (/tmp/work/r_06b44a9311b940208deebe90740a910e/work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson)
+NOTE: Fileref OUTNDJ cleared.
+NOTE: DATA _null_
+
+NOTE: Reading from fileref /tmp/work/r_06b44a9311b940208deebe90740a910e/work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson (work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson)
+
+["XXXX-001","YYYY-01",41]
+["XXXX-001","YYYY-02",51]
+
+NOTE: Read 3 rows from /tmp/work/r_06b44a9311b940208deebe90740a910e/work/98de1756-a3bf-426a-9504-4ea979f0e40c/adsl.ndjson.
+NOTE: Wrote _null_ (3 rows, 0 columns).
+NOTE: DATA elapsed:
+  wall  0.00 seconds
+  cpu   0.00 seconds
