@@ -1,0 +1,7 @@
+{
+  "bundle": "t002_ndjson_row_writer",
+  "source_file": "sas_dataset_json/06_macros/m_sas_to_ndjson1_1.sas",
+  "source_blob_sha": "0942156f6002ef3d08f4a4374a34f6a11f606928",
+  "source_commit": "af071422925b4048f338f03cdab1cbba8925a5a1",
+  "notes": "Exercises the NDJSON row-writing DATA _null_ step near the end of %m_sas_to_ndjson1_1 -- the IF/PUT logic that formats each observation as one JSON array line (the NDJSON representation of Dataset-JSON v1.1 'rows'), including the trailing-comma and quote-escaping handling. Driven directly via _vname{i}/_vtype{i}/_num_of_var macro variables (matching the package's own mock ADSL dataset shape: STUDYID/USUBJID as strings, AGE as integer) instead of the full macro's SASHELP.VCOLUMN/CALL EXECUTE column-metadata collection, which was found to be intermittently nondeterministic in Jenner during self-check of a full %m_sas_to_ndjson1_1 call (some runs fail with a downstream unresolved macro variable; not reliably reproducible across POSTs). One substitution beyond that: upstream writes character values via PUT's tilde (~) format modifier (put quote, temp-tilde, plus-open-paren-minus-1-close-paren, quote), which Jenner mishandles (see jenner-language regression test 403920 -- produces a stray literal '0' instead of the documented trailing-blank/pointer-backup behavior); the tilde is dropped since the macro's own surrounding literal quotes already produce the intended quoted output without it, so plain list output (same PUT statement minus the tilde) is functionally identical for this bundle's mock data."
+}

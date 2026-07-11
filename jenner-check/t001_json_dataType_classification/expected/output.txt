@@ -1,0 +1,9 @@
+
+   name  dataType  targetDataType  displayFormat  length
+-------  --------  --------------  -------------  ------
+STUDYID  string                                       20
+USUBJID  string                                       20
+AGE      integer                                       8
+RFSTDTC  date      integer         E8601DA.            8
+TRTSDTM  datetime  integer         E8601DT.            8
+
