@@ -40,10 +40,11 @@ Macro Name    : %m_ndjson1_1_to_sas
 
   Author         : [Yutaka Morioka]
   Created Date   : [2025-06-23]
-  Last update Date   : [2025-08-13] --  
+  Last update Date   : [2026-09-20] --  
    Setting the length of the dataset from dataset-json when the type is string.
    Bug fix for when the variable label in dataset-json is null  (0.20)
-  Version        : 0.20
+   Bug fix for adding logical record length of 32767 (0.3.0)
+  Version        : 0.3.0
   License        : MIT License
 
 *//*** HELP END ***/
@@ -56,7 +57,8 @@ filename map temp;
 
 /* Convert the NDJSON to JSON */
 data ___wk1;
-	infile nljson end=eof;
+    length line $32767;
+    infile nljson lrecl=32767 truncover end=eof;
 	do until (eof);
 		input;
 		line = _infile_;
