@@ -71,3 +71,9 @@ quit;
 data mylib1.ndjson_sas_stream_test1;
   set adsl;
 run;
+
+proc datasets lib=mylib1 nolist;
+  modify adsl;
+    xattr delete ;
+    run;
+quit;
