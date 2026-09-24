@@ -290,6 +290,59 @@ Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 
     %m_ndjson1_1_to_sas(inpath=/data/definejson, ds=AE);
 ~~~
 
+
+## %m_ndjson1_1_to_sas_stream
+### Description:  
+  Imports a CDISC Dataset-JSON 1.1 NDJSON file into a SAS dataset while  
+  processing the data portion in chunks.  The first physical line is treated  
+  as the Dataset-JSON metadata line.  Each remaining physical line is treated  
+  as one NDJSON data line.  
+  
+## Parameters:  
+~~~text 
+  inpath   : Directory containing <ds>.ndjson
+  ds       : Input file stem and output SAS dataset name
+  outlib   : Output SAS library (default: WORK)
+  chunksize: Number of NDJSON data lines processed per chunk (default: 10000)
+  obs      : Optional maximum number of data lines to read from the beginning.
+             If omitted, all data lines are read.
+  where    : Optional SAS expression evaluated after conversion, for example
+             %str(SEXN = 1 and AGE >= 65)
+  keep     : Optional SAS variable list retained in the completed dataset, for
+             example USUBJID PARAMCD AVAL or %str(USUBJID PARAM:)
+~~~
+  
+## Requirements:
+  - SAS 9.4M5 or later
+  - Dataset-JSON 1.1 NDJSON representation
+  - The first line contains root/columns metadata and each subsequent line
+    contains a JSON row array
+
+### Notes:
+  - CHUNKSIZE counts physical NDJSON data lines, not necessarily observations.
+  - OBS counts data lines only; the first metadata line is not included.
+    When OBS is specified, lines after that limit are not scanned or parsed.
+  - WHERE reduces the records written to the output dataset.  It does not
+    reduce the amount of input read or JSON parsed.
+  - KEEP is applied after WHERE in each chunk.  A variable used only by WHERE
+    therefore does not need to be included in KEEP.
+  - The output dataset is replaced only after all chunks complete.
+
+### Example:
+~~~sas  
+  %m_ndjson1_1_to_sas_stream(
+      inpath=C:\data,
+      ds=ADSL,
+      outlib=OUTLIB,
+      chunksize=10000,
+      obs=1000,
+      where=%str(SEXN = 1),
+      keep=USUBJID AGE SEX
+  );
+~~~
+  
+---
+
 # version history<br>
 0.2.1(24Auguat2025):Fixed a bug in m_sas_to_json1_1 and m_sas_to_ndjson1_1 where reconversion (sas → json → sas) failed if non-ISO formats were used for numeric date, datetime, or time values.  <br>
 0.2.0(13Auguat2025):Bug Fix.  
