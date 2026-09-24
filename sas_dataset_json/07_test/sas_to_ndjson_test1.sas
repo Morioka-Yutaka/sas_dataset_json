@@ -4,9 +4,9 @@ Sas dataset convert to ndjson(default)
 
 *//*** HELP END ***/
 
-%m_sas_to_jndson1_1(outpath = %sysfunc(pathname(work)),
+%m_sas_to_ndjson1_1(outpath = %sysfunc(pathname(work)),
                  library = mylib1,
-                 dataset = adsl,
+                 dataset = adsl
 );
 proc datasets lib=work memtype=data nolist;
   delete 
