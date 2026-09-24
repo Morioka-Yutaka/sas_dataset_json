@@ -60,3 +60,9 @@ VAR_EXATTR
 VAR_EXATTR_T
  ;
 quit;
+
+proc datasets lib=mylib1 nolist;
+  modify adsl;
+    xattr delete ;
+    run;
+quit;
