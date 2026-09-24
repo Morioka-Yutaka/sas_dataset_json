@@ -343,6 +343,8 @@ Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 
 ---
 
 # version history<br>
+0.3.0(24September2026)  updated logical record length in %m_ndjson1_1_to_sas,  
+added a new macro %m_ndjson1_1_to_sas_stream
 0.2.1(24Auguat2025):Fixed a bug in m_sas_to_json1_1 and m_sas_to_ndjson1_1 where reconversion (sas → json → sas) failed if non-ISO formats were used for numeric date, datetime, or time values.  <br>
 0.2.0(13Auguat2025):Bug Fix.  
 0.1.3(23Jun2025): Support NDJSON, add %m_sas_to_ndjson1_1 and %m_ndjson1_1_to_sas
