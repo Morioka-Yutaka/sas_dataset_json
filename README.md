@@ -292,9 +292,10 @@ Imports CDISC-compliant NDJSON (Representation of Dataset-JSON) format (version 
 
 
 ## %m_ndjson1_1_to_sas_stream
+### Contributor
+- Nakaya Ryo — contributed the %m_ndjson1_1_to_sas_stream
 ### Description:  
-  Imports a CDISC Dataset-JSON 1.1 NDJSON file into a SAS dataset while processing the data portion in chunks.  The first physical line is treated as the Dataset-JSON metadata line.  Each remaining physical line is treated  
-  as one NDJSON data line.  
+  Imports a CDISC Dataset-JSON 1.1 NDJSON file into a SAS dataset while processing the data portion in chunks.  The first physical line is treated as the Dataset-JSON metadata line.  Each remaining physical line is treated as one NDJSON data line.  
   
 ## Parameters:  
 ~~~text 
