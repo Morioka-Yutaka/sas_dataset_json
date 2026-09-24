@@ -55,3 +55,9 @@ run;
 proc datasets lib=work memtype=data nolist;
   delete adsl alldata columns dummy_columns root rows Sourcesystem ;
 quit;
+
+proc datasets lib=mylib1 nolist;
+  modify adsl;
+    xattr delete ;
+    run;
+quit;
